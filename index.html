@@ -380,11 +380,11 @@
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
     </div>
   </nav>
-  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <button class="mobile-menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
 </header>
 
 <nav class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-close" onclick="toggleMobileMenu()">✕</button>
+  <button class="mobile-nav-close">✕</button>
   <a href="#" onclick="showSection('portfolio');toggleMobileMenu();return false;" class="active" id="mnav-portfolio">Portfolio</a>
   <a href="#" onclick="showSection('about');toggleMobileMenu();return false;" id="mnav-about">About</a>
   <a href="#" onclick="showSection('services');toggleMobileMenu();return false;" id="mnav-services">Services</a>
@@ -620,17 +620,10 @@
 <script src="app.js?v=5"></script>
 
 <script>
-// Inline mobile menu — works even if app.js is cached
+// Inline mobile menu
 (function() {
-  function initMobileMenu() {
-    var btn = document.querySelector('.mobile-menu-btn');
-    if (!btn) return;
-    btn.addEventListener('click', toggleMenu);
-    document.querySelectorAll('.mobile-nav-close').forEach(function(el) {
-      el.addEventListener('click', toggleMenu);
-    });
-  }
-  function toggleMenu() {
+  function toggleMenu(e) {
+    if (e) e.stopPropagation();
     var nav = document.getElementById('mobileNav');
     var btn = document.querySelector('.mobile-menu-btn');
     if (!nav) return;
@@ -648,10 +641,27 @@
     }
   }
   window.toggleMobileMenu = toggleMenu;
+  function init() {
+    var btn = document.querySelector('.mobile-menu-btn');
+    if (btn) btn.addEventListener('click', toggleMenu);
+    document.querySelectorAll('.mobile-nav-close').forEach(function(el) {
+      el.addEventListener('click', toggleMenu);
+    });
+    // Mobile nav links close menu on click
+    document.querySelectorAll('.mobile-nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        var nav = document.getElementById('mobileNav');
+        var btn = document.querySelector('.mobile-menu-btn');
+        if (nav) { nav.classList.remove('visible'); setTimeout(function(){nav.classList.remove('open');},300); }
+        document.body.style.overflow = '';
+        if (btn) btn.classList.remove('open');
+      });
+    });
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileMenu);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initMobileMenu();
+    init();
   }
 })();
 </script>
