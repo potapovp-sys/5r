@@ -1,5 +1,11 @@
+const PROJ_EN = {"Широково": "Shirokovo Estate", "Ильинское": "Ilyinskoye", "Стрелковый клуб в Барвихе": "Shooting Club, Barvikha", "Селигер": "Seliger Lake House", "Олимпийские пруды": "Olympic Ponds", "С Видом на город": "City View", "Sky View": "Sky View", "Фьюжн на Смоленке": "Fusion on Smolenka", "Майндорф 2": "Maindorf 2", "Вилла Майя": "Villa Maya", "Дом на Новой Риге": "House on Novaya Riga", "Митино": "Mitino", "Чистые пруды": "Chistye Prudy", "Домодедово": "Domodedovo", "Новгород": "Novgorod", "Краснодарский край": "Krasnodar Region", "Геленжик": "Gelendzhik", "Серебряный бор 2": "Silver Pine Forest 2", "Липки": "Lipki", "Гостиница в Крыму": "Hotel in Crimea", "Детский центр": "Education Centre", "Конкурсный проект": "Competition Project", "Дом в подмосковье": "House near Moscow", "Деловой клуб": "Business Club", "На Воробьевых горах 2": "Sparrow Hills 2", "Раздоры 2": "Razdory 2", "Гринфилд": "Greenfield", "Аэропорт": "Airport", "Бадези (Сардиния)": "Badesi, Sardinia", "Майндорфф": "Maindorff", "МИСиС": "MISIS University", "Геленжик 2": "Gelendzhik 2", "Прага": "Prague", "Санта-Тереза (Сардиния)": "Santa Teresa, Sardinia", "Сивцев Вражек": "Sivtsev Vrazhek", "Классика для коллекционера": "Classics for a Collector", "Пестовское": "Pestovskoye", "Покровское": "Pokrovskoye", "Усово": "Usovo", "Графские пруды": "Grafskie Prudy", "Барвиха": "Barvikha", "Волхонка": "Volkhonka", "Конкурс": "Competition Entry", "Волга": "Volga", "Николино": "Nikolino", "Графский лес": "Count's Forest", "Дом над водопадом": "House over the Waterfall", "Раздоры 3": "Razdory 3", "Окулинено": "Okulineno", "Внуково": "Vnukovo", "Офис": "Office", "Самара": "Samara", "Раздоры": "Razdory", "Каменка": "Kamenka", "Ландшафт": "Landscape"};
+
+function getProjectName(ru) {
+  return LANG.current === 'en' ? (PROJ_EN[ru] || ru) : ru;
+}
+
 // ── TRANSLATIONS ──
-const LANG = { current: 'ru' };
+const LANG = { current: 'en' };
 
 function setLang(lang) {
   LANG.current = lang;
@@ -23,7 +29,6 @@ function setLang(lang) {
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = lang === 'ru' ? 'Поиск по проекту...' : 'Search project...';
 
-  // Re-render grid with translated card names (using data-ru/en on name elements)
   renderGrid(getFiltered());
 }
 
@@ -76,7 +81,7 @@ function renderGrid(projects) {
     const overlay = document.createElement('div'); overlay.className = 'card-overlay';
     const num = document.createElement('div'); num.className = 'card-num'; num.textContent = String(i+1).padStart(2,'0');
     const info = document.createElement('div'); info.className = 'card-info';
-    info.innerHTML = `<div class="card-name">${p.name}</div><div class="card-meta"><span class="card-arrow">→</span></div>`;
+    info.innerHTML = `<div class="card-name">${getProjectName(p.name)}</div><div class="card-meta"><span class="card-arrow">→</span></div>`;
 
     card.appendChild(img); card.appendChild(overlay); card.appendChild(num); card.appendChild(info);
     card.addEventListener('click', () => openLightbox(p, 0));
@@ -155,7 +160,7 @@ function updateLightbox() {
     }
   };
   ni.src = src;
-  title.textContent = currentProject.name;
+  title.textContent = getProjectName(currentProject.name);
   counter.textContent = (currentImgIdx + 1) + ' / ' + currentProject.images.length;
   fill.style.width = ((currentImgIdx + 1) / currentProject.images.length * 100) + '%';
   document.querySelectorAll('.lb-thumb').forEach((t,i) => t.classList.toggle('active', i === currentImgIdx));
@@ -211,3 +216,37 @@ document.getElementById('lbImg').addEventListener('touchend', e => { const dx = 
 
 // ── INIT ──
 renderGrid(PROJECTS);
+
+
+// ── MOBILE MENU ──
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobileNav');
+  if (nav) nav.classList.toggle('open');
+  document.body.style.overflow = nav && nav.classList.contains('open') ? 'hidden' : '';
+}
+
+// Update mobile nav on lang change
+const _origSetLang = setLang;
+// Patch setLang to also update mobile nav items
+function setLangFull(lang) {
+  _origSetLang(lang);
+  // Mobile nav links
+  const mnavLabels = {
+    'mnav-portfolio': {ru:'Портфолио', en:'Portfolio'},
+    'mnav-about':     {ru:'О студии',  en:'About'},
+    'mnav-services':  {ru:'Услуги',    en:'Services'},
+    'mnav-press':     {ru:'Пресса',    en:'Press'},
+    'mnav-contacts':  {ru:'Контакты',  en:'Contacts'},
+  };
+  Object.entries(mnavLabels).forEach(([id, t]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t[lang] || t.en;
+  });
+  // Mobile lang buttons
+  document.querySelectorAll('.mobile-lang .lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === lang.toUpperCase());
+  });
+  // Logo
+  const lm = document.getElementById('logo-main');
+  if (lm) lm.innerHTML = lang === 'en' ? 'FIFTH <span>RADIUS</span>' : 'ПЯТЫЙ <span>РАДИУС</span>';
+}

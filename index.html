@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru" id="html-root">
+<html lang="en" id="html-root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- NO REFERRER: prevents 5r.ru from blocking hotlinked images -->
 <meta name="referrer" content="no-referrer">
-<title>Пятый Радиус — Архитектурное бюро</title>
+<title>Fifth Radius — Architecture Bureau</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +40,7 @@
 
   /* HERO */
   .hero { height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 72px; position: relative; overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; background-image: url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901968_1.jpg'); background-size: cover; background-position: center; filter: brightness(0.35); transform: scale(1.05); animation: heroZoom 20s ease-in-out infinite alternate; }
+  .hero-bg { position: absolute; inset: 0; background-image: url('https://wsrv.nl/?url=https://5r.ru/wp-content/portfolio/108/1352901968_1.jpg'); background-size: cover; background-position: center; filter: brightness(0.35); transform: scale(1.05); animation: heroZoom 20s ease-in-out infinite alternate; }
   @keyframes heroZoom { from { transform: scale(1.05); } to { transform: scale(1.12); } }
   .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.92) 0%, transparent 60%); }
   .hero-content { position: relative; z-index: 2; max-width: 800px; }
@@ -208,56 +208,140 @@
     .lb-header { padding: 12px 16px; }
     .lb-footer { padding: 10px 16px; }
   }
+
+  /* ── MOBILE (iPhone) ── */
+  @media (max-width: 480px) {
+    /* Header */
+    header { padding: 12px 16px; }
+    .logo-main { font-size: 16px; letter-spacing: 0.12em; }
+    nav { gap: 8px; }
+    nav a.nav-link { display: none; }
+    .lang-switch { margin-left: 8px; padding-left: 8px; }
+    .lang-btn { padding: 3px 7px; font-size: 9px; }
+
+    /* Hamburger menu */
+    .mobile-menu-btn { display: flex; }
+    .mobile-nav { display: block; }
+
+    /* Hero */
+    .hero { padding: 0 16px 40px; height: 100svh; }
+    .hero-title { font-size: clamp(42px, 12vw, 64px); }
+    .hero-desc { font-size: 12px; max-width: 100%; margin-bottom: 28px; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .stat-num { font-size: 28px; }
+    .stat-label { font-size: 9px; }
+
+    /* Filter bar */
+    .filter-bar { top: 50px; padding: 8px 12px; gap: 6px; }
+    .filter-label { display: none; }
+    .filter-btn { padding: 5px 10px; font-size: 9px; }
+    .search-input { width: 100%; margin-left: 0; margin-top: 6px; }
+    .filter-bar { flex-wrap: wrap; }
+
+    /* Grid */
+    .gallery-section { padding: 20px 12px 60px; }
+    .grid { grid-template-columns: 1fr; gap: 2px; }
+    .project-card { aspect-ratio: 4/3; }
+    .project-card.large { grid-column: span 1; aspect-ratio: 4/3; }
+    .card-name { font-size: 18px; }
+
+    /* Sections */
+    .section-banner { height: 35vh; min-height: 200px; }
+    .page-section-title { font-size: clamp(28px, 9vw, 48px); }
+    .section-inner { padding: 28px 16px 48px; }
+    .section-banner-content { padding: 16px; }
+    .about-grid, .services-grid, .press-grid, .contacts-layout { grid-template-columns: 1fr; gap: 28px; }
+
+    /* Footer */
+    footer { padding: 28px 16px 24px; flex-direction: column; gap: 20px; }
+    .footer-right { align-items: flex-start; }
+    .footer-logo-main { font-size: 20px; }
+
+    /* Lightbox */
+    .lb-header { padding: 10px 12px; }
+    .lb-title { font-size: 16px; }
+    .lb-main { padding: 8px 40px; }
+    .lb-nav { width: 36px; height: 36px; font-size: 18px; }
+    .lb-prev { left: 4px; }
+    .lb-next { right: 4px; }
+    .lb-footer { padding: 8px 12px; flex-direction: column; gap: 8px; }
+    .lb-thumbs { max-width: 100%; }
+    .lb-thumb { width: 44px; height: 30px; }
+  }
+
+  /* Hamburger */
+  .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+  .mobile-menu-btn span { width: 22px; height: 1.5px; background: var(--white); display: block; transition: all 0.3s; }
+  .mobile-nav { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,10,10,0.98); z-index: 200; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { font-size: 24px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); text-decoration: none; font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+  .mobile-nav a:hover, .mobile-nav a.active { color: var(--gold); }
+  .mobile-nav-close { position: absolute; top: 20px; right: 20px; font-size: 28px; color: var(--white); background: none; border: none; cursor: pointer; }
+  .mobile-lang { display: flex; gap: 8px; margin-top: 16px; }
 </style>
 </head>
 <body>
 
 <header>
   <a class="logo-block" href="#" onclick="showSection('portfolio');return false;">
-    <div class="logo-main">ПЯТЫЙ <span>РАДИУС</span></div>
-    <div class="logo-sub" data-ru="Архитектурное бюро · Москва" data-en="Architecture Bureau · Moscow">Архитектурное бюро · Москва</div>
+    <div class="logo-main" id="logo-main">FIFTH <span>RADIUS</span></div>
+    <div class="logo-sub" data-ru="Архитектурное бюро" data-en="Architecture Bureau">Architecture Bureau</div>
   </a>
   <nav>
-    <a href="#" onclick="showSection('portfolio');return false;" class="nav-link active" data-sec="portfolio" data-ru="Портфолио" data-en="Portfolio">Портфолио</a>
-    <a href="#" onclick="showSection('about');return false;" class="nav-link" data-sec="about" data-ru="О студии" data-en="About">О студии</a>
-    <a href="#" onclick="showSection('services');return false;" class="nav-link" data-sec="services" data-ru="Услуги" data-en="Services">Услуги</a>
-    <a href="#" onclick="showSection('press');return false;" class="nav-link" data-sec="press" data-ru="Пресса" data-en="Press">Пресса</a>
-    <a href="#" onclick="showSection('contacts');return false;" class="nav-link" data-sec="contacts" data-ru="Контакты" data-en="Contacts">Контакты</a>
+    <a href="#" onclick="showSection('portfolio');return false;" class="nav-link active" data-sec="portfolio" data-ru="Портфолио" data-en="Portfolio">Portfolio</a>
+    <a href="#" onclick="showSection('about');return false;" class="nav-link" data-sec="about" data-ru="О студии" data-en="About">About</a>
+    <a href="#" onclick="showSection('services');return false;" class="nav-link" data-sec="services" data-ru="Услуги" data-en="Services">Services</a>
+    <a href="#" onclick="showSection('press');return false;" class="nav-link" data-sec="press" data-ru="Пресса" data-en="Press">Press</a>
+    <a href="#" onclick="showSection('contacts');return false;" class="nav-link" data-sec="contacts" data-ru="Контакты" data-en="Contacts">Contacts</a>
     <div class="lang-switch">
-      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
-      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
     </div>
   </nav>
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
 </header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="toggleMobileMenu()">✕</button>
+  <a href="#" onclick="showSection('portfolio');toggleMobileMenu();return false;" class="active" id="mnav-portfolio">Portfolio</a>
+  <a href="#" onclick="showSection('about');toggleMobileMenu();return false;" id="mnav-about">About</a>
+  <a href="#" onclick="showSection('services');toggleMobileMenu();return false;" id="mnav-services">Services</a>
+  <a href="#" onclick="showSection('press');toggleMobileMenu();return false;" id="mnav-press">Press</a>
+  <a href="#" onclick="showSection('contacts');toggleMobileMenu();return false;" id="mnav-contacts">Contacts</a>
+  <div class="mobile-lang">
+    <button class="lang-btn" onclick="setLang('ru');return false;">RU</button>
+    <button class="lang-btn active" onclick="setLang('en');return false;">EN</button>
+  </div>
+</nav>
 
 <!-- PORTFOLIO -->
 <section class="hero" id="sec-portfolio-hero">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-label" data-ru="Архитектурное бюро · Москва" data-en="Architecture Bureau · Moscow">Архитектурное бюро · Москва</p>
-    <h1 class="hero-title">Пятый<br><em>Радиус</em></h1>
-    <p class="hero-desc" data-ru="Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика." data-en="We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client.">Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика.</p>
+    <p class="hero-label" data-ru="Архитектурное бюро" data-en="Architecture Bureau">Architecture Bureau</p>
+    <h1 class="hero-title">Fifth<br><em>Radius</em></h1>
+    <p class="hero-desc" data-ru="Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика." data-en="We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client.">We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client.</p>
     <div class="hero-stats">
-      <div class="stat-item"><span class="stat-num">57</span><span class="stat-label" data-ru="Реализованных проектов" data-en="Completed projects">Реализованных проектов</span></div>
-      <div class="stat-item"><span class="stat-num">20+</span><span class="stat-label" data-ru="Лет на рынке" data-en="Years of practice">Лет на рынке</span></div>
-      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label" data-ru="Международных наград" data-en="International awards">Международных наград</span></div>
+      <div class="stat-item"><span class="stat-num">57</span><span class="stat-label" data-ru="Реализованных проектов" data-en="Completed projects">Completed Projects</span></div>
+      <div class="stat-item"><span class="stat-num">20+</span><span class="stat-label" data-ru="Лет на рынке" data-en="Years of practice">Years of Practice</span></div>
+      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label" data-ru="Международных наград" data-en="International awards">International Awards</span></div>
     </div>
   </div>
 </section>
 
 <div class="filter-bar" id="sec-portfolio-filters">
-  <span class="filter-label" data-ru="Направление:" data-en="Type:">Направление:</span>
-  <button class="filter-btn active" data-filter="all" data-ru="Все работы" data-en="All projects">Все работы</button>
-  <button class="filter-btn" data-filter="large" data-ru="Масштабные проекты" data-en="Major projects">Масштабные проекты</button>
-  <button class="filter-btn" data-filter="medium" data-ru="Загородные дома" data-en="Country houses">Загородные дома</button>
-  <button class="filter-btn" data-filter="small" data-ru="Интерьеры" data-en="Interiors">Интерьеры</button>
-  <input class="search-input" type="text" id="searchInput" data-ru-placeholder="Поиск по проекту..." data-en-placeholder="Search project..." placeholder="Поиск по проекту...">
+  <span class="filter-label" data-ru="Направление:" data-en="Type:">Type:</span>
+  <button class="filter-btn active" data-filter="all" data-ru="Все работы" data-en="All projects">All Projects</button>
+  <button class="filter-btn" data-filter="large" data-ru="Масштабные проекты" data-en="Major projects">Major Projects</button>
+  <button class="filter-btn" data-filter="medium" data-ru="Загородные дома" data-en="Country houses">Country Houses</button>
+  <button class="filter-btn" data-filter="small" data-ru="Интерьеры" data-en="Interiors">Interiors</button>
+  <input class="search-input" type="text" id="searchInput" data-ru-placeholder="Search project..." data-en-placeholder="Search project..." placeholder="Search project...">
 </div>
 
 <section class="gallery-section" id="sec-portfolio-gallery">
   <div class="section-header">
-    <h2 class="section-title" data-ru="Наши работы" data-en="Our Projects">Наши работы</h2>
+    <h2 class="section-title" data-ru="Наши работы" data-en="Our Projects">Our Work</h2>
     <span class="results-count" id="resultsCount"></span>
   </div>
   <div class="grid" id="grid"></div>
@@ -266,28 +350,28 @@
 <!-- ABOUT -->
 <section class="page-section" id="sec-about">
   <div class="section-banner">
-    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
+    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=https://5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" data-ru="Архитектурное бюро · Москва · с 2001 года" data-en="Architecture Bureau · Moscow · since 2001">Архитектурное бюро · Москва · с 2001 года</p>
-      <h1 class="page-section-title" data-ru="О <em>студии</em>" data-en="About <em>us</em>">О <em>студии</em></h1>
+      <p class="page-section-subtitle" data-ru="Архитектурное бюро · с 2001 года" data-en="Architecture Bureau · since 2001">Architecture Bureau · since 2001</p>
+      <h1 class="page-section-title" data-ru="О <em>студии</em>" data-en="About <em>us</em>">About <em>Us</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="about-grid">
       <div class="about-text">
-        <p data-ru="Архитектурное бюро «Пятый Радиус» основано в 2001 году. Мы выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб." data-en="Architecture bureau 'Fifth Radius' was founded in 2001. We provide a complete range of services for architectural design of any complexity — from commercial spaces to country villas and estates.">Архитектурное бюро «Пятый Радиус» основано в 2001 году. Мы выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб.</p>
-        <p data-ru="Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы создают проекты разнообразных стилевых направлений и осуществляют авторский надзор, в том числе удалённый — на объектах в любой точке мира." data-en="Our team comprises top experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide author supervision, including remote oversight for projects worldwide.">Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы создают проекты разнообразных стилевых направлений и осуществляют авторский надзор, в том числе удалённый — на объектах в любой точке мира.</p>
-        <p><strong style="color:var(--gold-light)" data-ru="5R + партнёр." data-en="5R + partner.">5R + партнёр.</strong> <span data-ru="Особое правило бюро — партнёрские отношения с каждым заказчиком. Мы создаём уникальные, полноценные для жизни пространства, в основу которых ложатся пожелания клиента." data-en="Our core principle is a partnership approach with every client. We create unique, fully livable spaces built around each client's vision and wishes.">Особое правило бюро — партнёрские отношения с каждым заказчиком. Мы создаём уникальные, полноценные для жизни пространства, в основу которых ложатся пожелания клиента.</span></p>
+        <p data-ru="Архитектурное бюро «Пятый Радиус» основано в 2001 году. Мы выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб." data-en="Architecture bureau 'Fifth Radius' was founded in 2001. We provide a complete range of services for architectural design of any complexity — from commercial spaces to country villas and estates.">Architecture bureau 'Fifth Radius' was founded in 2001. We provide a complete range of services for architectural design of any complexity — from commercial spaces to country villas and estates.</p>
+        <p data-ru="Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы создают проекты разнообразных стилевых направлений и осуществляют авторский надзор, в том числе удалённый — на объектах в любой точке мира." data-en="Our team comprises top experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide author supervision, including remote oversight for projects worldwide.">Our team comprises top experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide author supervision, including remote oversight for projects worldwide.</p>
+        <p><strong style="color:var(--gold-light)" data-ru="5R + партнёр." data-en="5R + partner.">5R + partner.</strong> <span data-ru="Особое правило бюро — партнёрские отношения с каждым заказчиком. Мы создаём уникальные, полноценные для жизни пространства, в основу которых ложатся пожелания клиента." data-en="Our core principle is a partnership approach with every client. We create unique, fully livable spaces built around each client's vision and wishes.">Our core principle is a partnership approach with every client. We create unique, fully livable spaces built around each client's vision and wishes.</span></p>
       </div>
       <div>
-        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Как с нами работать · 5 шагов" data-en="How we work · 5 steps">Как с нами работать · 5 шагов</p>
+        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Как с нами работать · 5 шагов" data-en="How we work · 5 steps">How We Work · 5 Steps</p>
         <div class="about-steps">
-          <div class="step-item"><div class="step-num">1</div><div class="step-text" data-ru="Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию проекта." data-en="We get to know the client's wishes, answer all questions and develop the project concept.">Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию проекта.</div></div>
-          <div class="step-item"><div class="step-num">2</div><div class="step-text" data-ru="Согласовываем объём работ, сроки и стоимость." data-en="We agree on the scope of work, timeline and budget.">Согласовываем объём работ, сроки и стоимость.</div></div>
-          <div class="step-item"><div class="step-num">3</div><div class="step-text" data-ru="Создаём проект, согласуем с заказчиком и подбираем субподрядчиков." data-en="We create the project, align it with the client and select subcontractors.">Создаём проект, согласуем с заказчиком и подбираем субподрядчиков.</div></div>
-          <div class="step-item"><div class="step-num">4</div><div class="step-text" data-ru="Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов." data-en="We provide author supervision throughout the entire construction cycle and monitor material deliveries.">Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов.</div></div>
-          <div class="step-item"><div class="step-num">5</div><div class="step-text" data-ru="Расставляем мебель, вешаем шторы и вручаем ключи." data-en="We arrange the furniture, hang the curtains and hand over the keys.">Расставляем мебель, вешаем шторы и вручаем ключи.</div></div>
+          <div class="step-item"><div class="step-num">1</div><div class="step-text" data-ru="Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию проекта." data-en="We get to know the client's wishes, answer all questions and develop the project concept.">We get to know the client's wishes, answer all questions and develop the project concept.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text" data-ru="Согласовываем объём работ, сроки и стоимость." data-en="We agree on the scope of work, timeline and budget.">We agree on the scope of work, timeline and budget.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text" data-ru="Создаём проект, согласуем с заказчиком и подбираем субподрядчиков." data-en="We create the project, align it with the client and select subcontractors.">We create the project, align it with the client and select subcontractors.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text" data-ru="Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов." data-en="We provide author supervision throughout the entire construction cycle and monitor material deliveries.">We provide author supervision throughout the entire construction cycle and monitor material deliveries.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text" data-ru="Расставляем мебель, вешаем шторы и вручаем ключи." data-en="We arrange the furniture, hang the curtains and hand over the keys.">We arrange the furniture, hang the curtains and hand over the keys.</div></div>
         </div>
       </div>
     </div>
@@ -297,44 +381,44 @@
 <!-- SERVICES -->
 <section class="page-section" id="sec-services">
   <div class="section-banner">
-    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562774_01.jpg')"></div>
+    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=https://5r.ru/wp-content/portfolio/130/1526562774_01.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" data-ru="Полный спектр услуг" data-en="Full range of services">Полный спектр услуг</p>
-      <h1 class="page-section-title" data-ru="<em>Услуги</em>" data-en="<em>Services</em>"><em>Услуги</em></h1>
+      <p class="page-section-subtitle" data-ru="Полный спектр услуг" data-en="Full range of services">Full range of services</p>
+      <h1 class="page-section-title" data-ru="<em>Услуги</em>" data-en="<em>Services</em>"><em>Services</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="services-grid">
       <div class="service-block">
-        <h3 data-ru="I. Проектирование" data-en="I. Architectural Design">I. Проектирование</h3>
+        <h3 data-ru="I. Проектирование" data-en="I. Architectural Design">I. Architectural Design</h3>
         <ul class="service-list">
-          <li data-ru="Разработка концепции" data-en="Concept development">Разработка концепции</li>
-          <li data-ru="Стадия П (проект)" data-en="Preliminary design">Стадия П (проект)</li>
-          <li data-ru="Рабочее проектирование (АР, КЖ, КМ, КД)" data-en="Working drawings (architectural, structural)">Рабочее проектирование (АР, КЖ, КМ, КД)</li>
-          <li data-ru="Инженерный проект" data-en="Engineering design">Инженерный проект</li>
-          <li class="sub" data-ru="Отопление, вентиляция, кондиционирование" data-en="Heating, ventilation, air conditioning">Отопление, вентиляция, кондиционирование</li>
-          <li class="sub" data-ru="Умный дом, охранные и пожарные системы" data-en="Smart home, security and fire systems">Умный дом, охранные и пожарные системы</li>
-          <li class="sub" data-ru="Камины, бассейны и СПА" data-en="Fireplaces, pools and spa">Камины, бассейны и СПА</li>
-          <li class="sub" data-ru="Ландшафтные решения" data-en="Landscape design">Ландшафтные решения</li>
-          <li class="sub" data-ru="Альтернативные и энергосберегающие системы" data-en="Alternative and energy-saving systems">Альтернативные и энергосберегающие системы</li>
-          <li data-ru="Авторский надзор" data-en="Author supervision">Авторский надзор</li>
-          <li data-ru="Функции генерального проектировщика" data-en="General designer services">Функции генерального проектировщика</li>
+          <li data-ru="Разработка концепции" data-en="Concept development">Concept development</li>
+          <li data-ru="Стадия П (проект)" data-en="Preliminary design">Preliminary design</li>
+          <li data-ru="Рабочее проектирование (АР, КЖ, КМ, КД)" data-en="Working drawings (architectural, structural)">Working drawings (architectural, structural)</li>
+          <li data-ru="Инженерный проект" data-en="Engineering design">Engineering design</li>
+          <li class="sub" data-ru="Отопление, вентиляция, кондиционирование" data-en="Heating, ventilation, air conditioning">Heating, ventilation, air conditioning</li>
+          <li class="sub" data-ru="Умный дом, охранные и пожарные системы" data-en="Smart home, security and fire systems">Smart home, security and fire systems</li>
+          <li class="sub" data-ru="Камины, бассейны и СПА" data-en="Fireplaces, pools and spa">Fireplaces, pools and spa</li>
+          <li class="sub" data-ru="Ландшафтные решения" data-en="Landscape design">Landscape design</li>
+          <li class="sub" data-ru="Альтернативные и энергосберегающие системы" data-en="Alternative and energy-saving systems">Alternative and energy-saving systems</li>
+          <li data-ru="Авторский надзор" data-en="Author supervision">Author supervision</li>
+          <li data-ru="Функции генерального проектировщика" data-en="General designer services">General designer services</li>
         </ul>
       </div>
       <div class="service-block">
-        <h3 data-ru="II. Дизайн интерьеров" data-en="II. Interior Design">II. Дизайн интерьеров</h3>
+        <h3 data-ru="II. Дизайн интерьеров" data-en="II. Interior Design">II. Interior Design</h3>
         <ul class="service-list">
-          <li data-ru="Создание концепции и стилистического решения" data-en="Concept and style development">Создание концепции и стилистического решения</li>
-          <li data-ru="Разработка эскизного проекта" data-en="Preliminary design">Разработка эскизного проекта</li>
-          <li class="sub" data-ru="Планировочные решения" data-en="Floor plans">Планировочные решения</li>
-          <li class="sub" data-ru="Подбор отделочных материалов" data-en="Finishing material selection">Подбор отделочных материалов</li>
-          <li class="sub" data-ru="Подборки мебели и тканей" data-en="Furniture and fabric selection">Подборки мебели и тканей</li>
-          <li class="sub" data-ru="3D визуализация" data-en="3D visualization">3D визуализация</li>
-          <li data-ru="Рабочий дизайн-проект с полным набором чертежей" data-en="Working design project with complete drawings">Рабочий дизайн-проект с полным набором чертежей</li>
-          <li class="sub" data-ru="Разрезы, развёртки, узлы" data-en="Sections, elevations, details">Разрезы, развёртки, узлы</li>
-          <li class="sub" data-ru="Спецификация материалов, оборудования и мебели" data-en="Specifications for materials, equipment and furniture">Спецификация материалов, оборудования и мебели</li>
-          <li data-ru="Авторский надзор" data-en="Author supervision">Авторский надзор</li>
+          <li data-ru="Создание концепции и стилистического решения" data-en="Concept and style development">Concept and style development</li>
+          <li data-ru="Разработка эскизного проекта" data-en="Preliminary design">Preliminary design</li>
+          <li class="sub" data-ru="Планировочные решения" data-en="Floor plans">Floor plans</li>
+          <li class="sub" data-ru="Подбор отделочных материалов" data-en="Finishing material selection">Finishing material selection</li>
+          <li class="sub" data-ru="Подборки мебели и тканей" data-en="Furniture and fabric selection">Furniture and fabric selection</li>
+          <li class="sub" data-ru="3D визуализация" data-en="3D visualization">3D visualization</li>
+          <li data-ru="Рабочий дизайн-проект с полным набором чертежей" data-en="Working design project with complete drawings">Working design project with complete drawings</li>
+          <li class="sub" data-ru="Разрезы, развёртки, узлы" data-en="Sections, elevations, details">Sections, elevations, details</li>
+          <li class="sub" data-ru="Спецификация материалов, оборудования и мебели" data-en="Specifications for materials, equipment and furniture">Specifications for materials, equipment and furniture</li>
+          <li data-ru="Авторский надзор" data-en="Author supervision">Author supervision</li>
         </ul>
       </div>
     </div>
@@ -344,31 +428,31 @@
 <!-- PRESS -->
 <section class="page-section" id="sec-press">
   <div class="section-banner">
-    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454772_001.jpg')"></div>
+    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=https://5r.ru/wp-content/portfolio/124/1537454772_001.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" data-ru="Публикации и признание" data-en="Publications and recognition">Публикации и признание</p>
-      <h1 class="page-section-title" data-ru="Пресса <em>&amp;</em> Награды" data-en="Press <em>&amp;</em> Awards">Пресса <em>&amp;</em> Награды</h1>
+      <p class="page-section-subtitle" data-ru="Публикации и признание" data-en="Publications and recognition">Publications and recognition</p>
+      <h1 class="page-section-title" data-ru="Пресса <em>&amp;</em> Награды" data-en="Press <em>&amp;</em> Awards">Press <em>&amp;</em> Awards</h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="press-grid">
       <div>
-        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Награды" data-en="Awards">Награды</p>
+        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Награды" data-en="Awards">Awards</p>
         <div class="awards-list">
-          <div class="award-item"><div class="award-year">PINWIN 2016</div><div class="award-title" data-ru="1 место · Загородный дом" data-en="1st place · Country house">1 место · Загородный дом</div><div class="award-org" data-ru="Интеграция в реальный ландшафт" data-en="Integration into natural landscape">Интеграция в реальный ландшафт</div></div>
-          <div class="award-item"><div class="award-year">PINWIN 2015–2016</div><div class="award-title" data-ru="Специальный приз жюри" data-en="Special jury prize">Специальный приз жюри</div><div class="award-org" data-ru="Лучший интерьер домашнего кинотеатра" data-en="Best home cinema interior">Лучший интерьер домашнего кинотеатра</div></div>
+          <div class="award-item"><div class="award-year">PINWIN 2016</div><div class="award-title" data-ru="1 место · Загородный дом" data-en="1st place · Country house">1st place · Country house</div><div class="award-org" data-ru="Интеграция в реальный ландшафт" data-en="Integration into natural landscape">Integration into natural landscape</div></div>
+          <div class="award-item"><div class="award-year">PINWIN 2015–2016</div><div class="award-title" data-ru="Специальный приз жюри" data-en="Special jury prize">Special jury prize</div><div class="award-org" data-ru="Лучший интерьер домашнего кинотеатра" data-en="Best home cinema interior">Best home cinema interior</div></div>
           <div class="award-item"><div class="award-year">INTERNATIONAL PROPERTY AWARDS 2012</div><div class="award-title">Interior Design Private Residence</div><div class="award-org">International Property Awards</div></div>
           <div class="award-item"><div class="award-year">INTERNATIONAL PROPERTY AWARDS 2012–2013</div><div class="award-title">Architecture Single Residence</div><div class="award-org">International Property Awards</div></div>
-          <div class="award-item"><div class="award-year" data-ru="АРХИТЕКТУРНАЯ ПРЕМИЯ 2010" data-en="ARCHITECTURAL AWARD 2010">АРХИТЕКТУРНАЯ ПРЕМИЯ 2010</div><div class="award-title" data-ru="Художественный металл в архитектуре" data-en="Artistic metal in architecture">Художественный металл в архитектуре</div></div>
+          <div class="award-item"><div class="award-year" data-ru="АРХИТЕКТУРНАЯ ПРЕМИЯ 2010" data-en="ARCHITECTURAL AWARD 2010">ARCHITECTURAL AWARD 2010</div><div class="award-title" data-ru="Художественный металл в архитектуре" data-en="Artistic metal in architecture">Artistic metal in architecture</div></div>
         </div>
       </div>
       <div class="press-publications">
-        <h3 data-ru="Публикации" data-en="Publications">Публикации</h3>
+        <h3 data-ru="Публикации" data-en="Publications">Publications</h3>
         <div class="pub-group"><div class="pub-group-name">Журнал «САЛОН» / SALON Magazine</div><div class="pub-item">«Императорский портной» · Пленэр в интерьере · Дом в доме · Театр «Модерн» · Тоска по неоклассике · В своём поместье</div></div>
         <div class="pub-group"><div class="pub-group-name">Лучшие интерьеры / Design Diffusion News (IT)</div><div class="pub-item">Неуловимое сочетание · Царство детали · Liberty l international style, 2002</div></div>
         <div class="pub-group"><div class="pub-group-name">Дом &amp; Интерьер · Интерьер + Дизайн · Красивые квартиры</div><div class="pub-item">«В каждом доме должна быть интрига» · «Три шага в этно» · «Место встречи» · «Солнце, море и песок»</div></div>
-        <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin:24px 0 10px" data-ru="Онлайн" data-en="Online">Онлайн</p>
+        <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin:24px 0 10px" data-ru="Онлайн" data-en="Online">Online</p>
         <div class="online-links">
           <a class="online-link" href="https://www.houzz.ru/user/fifth-radius" target="_blank"><span>↗</span> Houzz</a>
           <a class="online-link" href="https://www.archrevue.ru/profilearchitect/1939.html" target="_blank"><span>↗</span> ArchRevue</a>
@@ -382,25 +466,25 @@
 <!-- CONTACTS -->
 <section class="page-section" id="sec-contacts">
   <div class="section-banner">
-    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
+    <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=https://5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" data-ru="Свяжитесь с нами" data-en="Get in touch">Свяжитесь с нами</p>
-      <h1 class="page-section-title" data-ru="<em>Контакты</em>" data-en="<em>Contacts</em>"><em>Контакты</em></h1>
+      <p class="page-section-subtitle" data-ru="Свяжитесь с нами" data-en="Get in touch">Get in touch</p>
+      <h1 class="page-section-title" data-ru="<em>Контакты</em>" data-en="<em>Contacts</em>"><em>Contacts</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="contacts-layout">
       <div>
         <div class="contact-block">
-          <div class="contact-label" data-ru="Адрес" data-en="Address">Адрес</div>
-          <div class="contact-value" data-ru="119002, Москва<br>ул. Арбат, 35, офис 343" data-en="119002, Moscow<br>35 Arbat St., office 343">119002, Москва<br>ул. Арбат, 35, офис 343</div>
-          <div class="contact-note" data-ru="Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж" data-en="Central House of Actors<br>Entrance from Kаloshin Lane, 3rd floor">Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж</div>
+          <div class="contact-label" data-ru="Адрес" data-en="Address">Address</div>
+          <div class="contact-value" data-ru="119002<br>ул. Арбат, 35, офис 343" data-en="119002<br>35 Arbat St., office 343">119002<br>35 Arbat St., office 343</div>
+          <div class="contact-note" data-ru="Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж" data-en="Central House of Actors<br>Entrance from Kаloshin Lane, 3rd floor">Central House of Actors<br>Entrance from Kaloshin Lane, 3rd floor</div>
         </div>
         <div class="contact-block">
-          <div class="contact-label" data-ru="Телефон" data-en="Phone">Телефон</div>
+          <div class="contact-label" data-ru="Телефон" data-en="Phone">Phone</div>
           <div class="contact-value"><a href="tel:+79255052058">+7 (925) 505 2058</a></div>
-          <div class="contact-note" data-ru="Александр Бурыкин, творческий руководитель" data-en="Alexander Burykin, Creative Director">Александр Бурыкин, творческий руководитель</div>
+          <div class="contact-note" data-ru="Александр Бурыкин, творческий руководитель" data-en="Alexander Burykin, Creative Director">Alexander Burykin, Creative Director</div>
         </div>
         <div class="contact-block">
           <div class="contact-label">Website</div>
@@ -409,8 +493,8 @@
       </div>
       <div>
         <div class="map-box">
-          <div class="map-box-title">ул. Арбат, 35 · Москва</div>
-          <a class="map-btn" href="https://maps.google.com/?q=Арбат+35+Москва" target="_blank" data-ru="Открыть на карте →" data-en="Open in Maps →">Открыть на карте →</a>
+          <div class="map-box-title">ул. Арбат, 35 </div>
+          <a class="map-btn" href="https://maps.google.com/?q=Арбат+35+Москва" target="_blank" data-ru="Открыть на карте →" data-en="Open in Maps →">Open in Maps →</a>
         </div>
       </div>
     </div>
@@ -419,14 +503,14 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-logo-main">ПЯТЫЙ <span>РАДИУС</span></div>
-    <div class="footer-logo-sub" data-ru="Архитектурное бюро · Москва · с 2001 года" data-en="Architecture Bureau · Moscow · since 2001">Архитектурное бюро · Москва · с 2001 года</div>
+    <div class="footer-logo-main">FIFTH <span>RADIUS</span></div>
+    <div class="footer-logo-sub" data-ru="Архитектурное бюро · с 2001 года" data-en="Architecture Bureau · since 2001">Architecture Bureau · since 2001</div>
   </div>
   <div class="footer-right">
     <div class="footer-contact"><a href="tel:+79255052058">+7 (925) 505 2058</a></div>
-    <div class="footer-contact" data-ru="Москва, ул. Арбат, 35, оф. 343" data-en="35 Arbat St., office 343, Moscow">Москва, ул. Арбат, 35, оф. 343</div>
+    <div class="footer-contact" data-ru="Москва, ул. Арбат, 35, оф. 343" data-en="35 Arbat St., office 343">35 Arbat St., office 343</div>
     <div class="footer-contact"><a href="https://5r.ru" target="_blank">5r.ru</a></div>
-    <div class="footer-copy" data-ru="© Пятый Радиус, 2001–2025" data-en="© Fifth Radius, 2001–2025">© Пятый Радиус, 2001–2025</div>
+    <div class="footer-copy" data-ru="© Пятый Радиус, 2001–2025" data-en="© Fifth Radius, 2001–2025">© Fifth Radius, 2001–2025</div>
   </div>
 </footer>
 
