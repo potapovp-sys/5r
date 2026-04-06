@@ -1,323 +1,374 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" id="html-root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- NO REFERRER: prevents 5r.ru from blocking hotlinked images -->
 <meta name="referrer" content="no-referrer">
-<title>Fifth Radius — Architecture Bureau</title>
+<title>Пятый Радиус — Архитектурное бюро</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--black:#0a0a0a;--white:#f5f3ef;--gold:#b8975a;--gold-light:#d4b07a;--grey:#888;--grey-light:#ccc}
-html{scroll-behavior:smooth}
-body{background:var(--black);color:var(--white);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden}
-.project-card,.lb-nav,.lb-btn,.filter-btn,.nav-link,.lb-thumb,button,.lang-btn{cursor:pointer}
-header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:rgba(10,10,10,0.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.05)}
-.logo-block{text-decoration:none}
-.logo-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;letter-spacing:0.25em;color:var(--white);text-transform:uppercase}
-.logo-name span{color:var(--gold)}
-nav{display:flex;gap:22px;align-items:center}
-a.nav-link{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-light);text-decoration:none;transition:color .3s}
-a.nav-link:hover,a.nav-link.active{color:var(--gold)}
-.lang-switch{display:flex;gap:3px;margin-left:14px;border-left:1px solid rgba(255,255,255,0.1);padding-left:14px}
-.lang-btn{font-size:10px;letter-spacing:0.12em;padding:4px 9px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--grey-light);transition:all .2s}
-.lang-btn.active{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:500}
-.hero{height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 72px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901968_1.jpg');background-size:cover;background-position:center;filter:brightness(.3);transform:scale(1.05);animation:heroZoom 20s ease-in-out infinite alternate}
-@keyframes heroZoom{from{transform:scale(1.05)}to{transform:scale(1.12)}}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.92) 0%,transparent 60%)}
-.hero-content{position:relative;z-index:2;max-width:800px}
-.hero-label{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8vw,96px);font-weight:300;line-height:.95;color:var(--white);margin-bottom:24px}
-.hero-title em{font-style:italic;color:var(--gold-light)}
-.hero-desc{font-size:13px;color:var(--grey-light);letter-spacing:.05em;line-height:1.8;max-width:500px;margin-bottom:40px}
-.hero-stats{display:flex;gap:48px}
-.stat-item{display:flex;flex-direction:column;gap:4px}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold)}
-.stat-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
-.filter-bar{position:sticky;top:79px;z-index:90;background:rgba(10,10,10,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06);padding:13px 48px;display:flex;gap:8px;align-items:center;overflow-x:auto}
-.filter-bar::-webkit-scrollbar{display:none}
-.filter-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey);margin-right:8px;white-space:nowrap}
-.filter-btn{padding:7px 16px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;background:transparent;color:var(--grey-light);border:1px solid rgba(255,255,255,.12);white-space:nowrap;transition:all .25s}
-.filter-btn:hover{border-color:var(--gold);color:var(--gold)}
-.filter-btn.active{background:var(--gold);color:var(--black);border-color:var(--gold)}
-.search-input{margin-left:auto;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--white);padding:7px 16px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:.1em;width:200px;outline:none;transition:border-color .3s}
-.search-input::placeholder{color:var(--grey)}
-.search-input:focus{border-color:var(--gold)}
-.gallery-section{padding:56px 48px 80px}
-.section-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:40px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:20px}
-.section-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px}
-.no-results{grid-column:1/-1;text-align:center;padding:80px 0;font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--grey);font-style:italic}
-.project-card{position:relative;aspect-ratio:4/3;overflow:hidden;background:#111;opacity:0;transform:translateY(20px);animation:fadeIn .5s ease forwards}
-.project-card.large{grid-column:span 2;aspect-ratio:16/7}
-@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-.card-img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.25,.46,.45,.94),filter .4s;filter:brightness(.72) saturate(.9)}
-.project-card:hover .card-img{transform:scale(1.08);filter:brightness(.42) saturate(.7)}
-.card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);opacity:0;transition:opacity .4s}
-.project-card:hover .card-overlay{opacity:1}
-.card-info{position:absolute;bottom:0;left:0;right:0;padding:24px 20px 20px;transform:translateY(8px);transition:transform .4s}
-.project-card:hover .card-info{transform:translateY(0)}
-.card-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:8px}
-.card-arrow{width:28px;height:28px;border:1px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--white);transform:translateX(-8px);transition:transform .3s,border-color .3s}
-.project-card:hover .card-arrow{transform:translateX(0);border-color:var(--gold)}
-.card-num{position:absolute;top:14px;right:14px;font-family:'Cormorant Garamond',serif;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:.1em}
-.card-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:64px;color:var(--gold);opacity:.1;background:linear-gradient(135deg,#1a1a1a,#2a2520,#1a1510)}
-.page-section{display:none;min-height:100vh;animation:fadeIn .5s ease}
-.page-section.active{display:block}
-.section-banner{height:45vh;min-height:280px;position:relative;overflow:hidden}
-.section-banner-bg{position:absolute;inset:0;background-size:cover;background-position:center 30%;filter:brightness(.28)}
-.section-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,var(--black) 0%,transparent 60%)}
-.section-banner-content{position:absolute;bottom:0;left:0;right:0;padding:48px}
-.page-section-subtitle{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.page-section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,72px);font-weight:300;line-height:1;color:var(--white)}
-.page-section-title em{font-style:italic;color:var(--gold-light)}
-.section-inner{padding:60px 48px 80px}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1100px}
-.about-text{font-size:14px;line-height:2;color:rgba(255,255,255,.75)}
-.about-text p{margin-bottom:24px}
-.about-steps{display:flex;flex-direction:column;gap:18px}
-.step-item{display:flex;gap:20px;align-items:flex-start;padding:20px 24px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:border-color .3s}
-.step-item:hover{border-color:var(--gold)}
-.step-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);line-height:1;flex-shrink:0;width:40px}
-.step-text{font-size:13px;line-height:1.7;color:rgba(255,255,255,.7);padding-top:6px}
-.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;max-width:1100px}
-.service-block{padding:40px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);transition:border-color .3s,background .3s}
-.service-block:hover{border-color:var(--gold);background:rgba(184,151,90,.04)}
-.service-block h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--white);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(184,151,90,.3)}
-.service-list{list-style:none}
-.service-list li{font-size:13px;color:rgba(255,255,255,.65);line-height:1.9;padding:3px 0 3px 16px;position:relative}
-.service-list li::before{content:'—';position:absolute;left:0;color:var(--gold);font-size:11px}
-.service-list li.sub{padding-left:32px}
-.service-list li.sub::before{left:16px;content:'·'}
-.press-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1100px}
-.awards-list{display:flex;flex-direction:column;gap:16px}
-.award-item{padding:20px 24px;border-left:2px solid var(--gold);background:rgba(184,151,90,.04)}
-.award-year{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
-.award-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--white);margin-bottom:3px}
-.award-org{font-size:11px;color:var(--grey);letter-spacing:.08em}
-.press-publications h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--white);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
-.pub-group{margin-bottom:24px}
-.pub-group-name{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.pub-item{font-size:13px;color:rgba(255,255,255,.6);line-height:2}
-.online-links{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-.online-link{display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px solid rgba(255,255,255,.07);text-decoration:none;color:var(--white);font-size:12px;letter-spacing:.1em;transition:all .25s}
-.online-link:hover{border-color:var(--gold);color:var(--gold)}
-.online-link span{color:var(--gold);font-size:10px}
-.contacts-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1100px}
-.contact-block{margin-bottom:36px}
-.contact-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.contact-value{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--white);line-height:1.5}
-.contact-value a{color:var(--gold-light);text-decoration:none}
-.contact-value a:hover{color:var(--gold)}
-.contact-note{font-size:12px;color:var(--grey);margin-top:6px;line-height:1.7}
-.map-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
-.map-box-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(255,255,255,.3)}
-.map-btn{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--gold);padding:9px 22px;transition:all .2s}
-.map-btn:hover{background:var(--gold);color:var(--black)}
-footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
-.footer-left{display:flex;align-items:center;gap:16px}
-.footer-logo-img{height:44px;width:auto}
-.footer-logo-text{display:flex;flex-direction:column;gap:4px}
-.footer-logo-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--white);letter-spacing:.12em}
-.footer-logo-name span{color:var(--gold)}
-.footer-logo-sub{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--grey)}
-.footer-right{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
-.footer-contact{font-size:13px;color:rgba(255,255,255,.55);letter-spacing:.05em}
-.footer-contact a{color:var(--gold-light);text-decoration:none}
-.footer-contact a:hover{color:var(--gold)}
-.footer-copy{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.08em;margin-top:4px}
-.lightbox{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.97);display:none;flex-direction:column;opacity:0;transition:opacity .3s}
-.lightbox.open{display:flex}
-.lightbox.visible{opacity:1}
-.lb-header{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
-.lb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--white)}
-.lb-btn{width:38px;height:38px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--white);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.lb-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--black)}
-.lb-main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:20px 80px}
-.lb-img{max-width:100%;max-height:calc(100vh - 200px);object-fit:contain;transition:opacity .25s}
-.lb-img.loading{opacity:0}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;background:rgba(10,10,10,.7);border:1px solid rgba(255,255,255,.15);color:var(--white);font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
-.lb-nav:hover{background:var(--gold);border-color:var(--gold);color:var(--black)}
-.lb-prev{left:16px}.lb-next{right:16px}
-.lb-footer{padding:14px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
-.lb-counter{font-size:12px;letter-spacing:.15em;color:var(--grey)}
-.lb-thumbs{display:flex;gap:5px;overflow-x:auto;max-width:65%;padding-bottom:2px}
-.lb-thumbs::-webkit-scrollbar{height:2px;background:rgba(255,255,255,.05)}
-.lb-thumbs::-webkit-scrollbar-thumb{background:var(--gold)}
-.lb-thumb{width:50px;height:34px;flex-shrink:0;object-fit:cover;opacity:.4;transition:opacity .2s;border:1px solid transparent}
-.lb-thumb:hover{opacity:.7}
-.lb-thumb.active{opacity:1;border-color:var(--gold)}
-.lb-progress{height:2px;background:rgba(255,255,255,.07)}
-.lb-progress-fill{height:100%;background:var(--gold);transition:width .3s}
-@media(max-width:900px){
-  header{padding:12px 20px}
-  .logo-text{display:none}
-  nav{gap:14px}
-  a.nav-link{display:none}
-  .hero{padding:0 20px 48px}
-  .filter-bar{padding:10px 20px;top:72px}
-  .gallery-section{padding:32px 20px 60px}
-  .about-grid,.services-grid,.press-grid,.contacts-layout{grid-template-columns:1fr;gap:40px}
-  .section-inner{padding:40px 20px 60px}
-  .section-banner-content{padding:24px 20px}
-  footer{padding:36px 20px 28px;flex-direction:column;align-items:flex-start;gap:24px}
-  .footer-right{align-items:flex-start}
-  .project-card.large{grid-column:span 1;aspect-ratio:4/3}
-  .lb-main{padding:12px 52px}
-  .lb-header,.lb-footer{padding:12px 16px}
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0a0a0a; --white: #f5f3ef; --gold: #b8975a;
+    --gold-light: #d4b07a; --grey: #888; --grey-light: #ccc;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Montserrat', sans-serif; font-weight: 300; overflow-x: hidden; cursor: default; }
+  .project-card, .lb-nav, .lb-btn, .filter-btn, .nav-link, .lb-thumb, button, .lang-btn { cursor: pointer; }
+
+  /* HEADER */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.97) 0%, transparent 100%);
+    backdrop-filter: blur(6px);
+  }
+  .logo-block { display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
+  .logo-main { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; letter-spacing: 0.18em; color: var(--white); text-transform: uppercase; }
+  .logo-main span { color: var(--gold); }
+  .logo-sub { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--grey); margin-left: 2px; }
+  nav { display: flex; gap: 28px; align-items: center; }
+  nav a.nav-link { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey-light); text-decoration: none; transition: color 0.3s; }
+  nav a.nav-link:hover, nav a.nav-link.active { color: var(--gold); }
+
+  /* LANG SWITCHER */
+  .lang-switch { display: flex; gap: 4px; margin-left: 16px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 16px; }
+  .lang-btn { font-size: 10px; letter-spacing: 0.15em; padding: 4px 8px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--grey-light); transition: all 0.2s; }
+  .lang-btn.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+
+  /* HERO */
+  .hero { height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 72px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background-image: url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901968_1.jpg'); background-size: cover; background-position: center; filter: brightness(0.35); transform: scale(1.05); animation: heroZoom 20s ease-in-out infinite alternate; }
+  @keyframes heroZoom { from { transform: scale(1.05); } to { transform: scale(1.12); } }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.92) 0%, transparent 60%); }
+  .hero-content { position: relative; z-index: 2; max-width: 800px; }
+  .hero-label { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 96px); font-weight: 300; line-height: 0.95; color: var(--white); margin-bottom: 24px; }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-desc { font-size: 13px; color: var(--grey-light); letter-spacing: 0.05em; line-height: 1.8; max-width: 480px; margin-bottom: 40px; }
+  .hero-stats { display: flex; gap: 48px; }
+  .stat-item { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--gold); }
+  .stat-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); }
+
+  /* FILTER BAR */
+  .filter-bar { position: sticky; top: 68px; z-index: 90; background: rgba(10,10,10,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 14px 48px; display: flex; gap: 8px; align-items: center; overflow-x: auto; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); margin-right: 8px; white-space: nowrap; }
+  .filter-btn { padding: 7px 16px; font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; background: transparent; color: var(--grey-light); border: 1px solid rgba(255,255,255,0.12); white-space: nowrap; transition: all 0.25s; }
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active { background: var(--gold); color: var(--black); border-color: var(--gold); }
+  .search-input { margin-left: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--white); padding: 7px 16px; font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.1em; width: 200px; outline: none; transition: border-color 0.3s; }
+  .search-input::placeholder { color: var(--grey); }
+  .search-input:focus { border-color: var(--gold); }
+
+  /* GALLERY */
+  .gallery-section { padding: 56px 48px 80px; }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 20px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--white); }
+  .results-count { font-size: 11px; color: var(--grey); letter-spacing: 0.1em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; }
+  .no-results { grid-column: 1/-1; text-align: center; padding: 80px 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--grey); font-style: italic; }
+
+  /* PROJECT CARD */
+  .project-card { position: relative; aspect-ratio: 4/3; overflow: hidden; background: #111; opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s ease forwards; }
+  .project-card.large { grid-column: span 2; aspect-ratio: 16/7; }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+  .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.4s; filter: brightness(0.75) saturate(0.9); }
+  .project-card:hover .card-img { transform: scale(1.08); filter: brightness(0.45) saturate(0.7); }
+  .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); opacity: 0; transition: opacity 0.4s; }
+  .project-card:hover .card-overlay { opacity: 1; }
+  .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 20px 20px; transform: translateY(8px); transition: transform 0.4s; }
+  .project-card:hover .card-info { transform: translateY(0); }
+  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--white); line-height: 1.2; margin-bottom: 8px; }
+  .card-meta { display: flex; gap: 12px; align-items: center; }
+  .card-arrow { margin-left: auto; width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--white); transform: translateX(-8px); transition: transform 0.3s, border-color 0.3s; }
+  .project-card:hover .card-arrow { transform: translateX(0); border-color: var(--gold); }
+  .card-num { position: absolute; top: 14px; right: 14px; font-family: 'Cormorant Garamond', serif; font-size: 13px; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; }
+  .card-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 64px; color: var(--gold); opacity: 0.1; background: linear-gradient(135deg,#1a1a1a,#2a2520,#1a1510); }
+
+  /* PAGE SECTIONS */
+  .page-section { display: none; min-height: 100vh; animation: fadeIn 0.5s ease; }
+  .page-section.active { display: block; }
+  .section-banner { height: 45vh; min-height: 280px; position: relative; overflow: hidden; }
+  .section-banner-bg { position: absolute; inset: 0; background-size: cover; background-position: center 30%; filter: brightness(0.32); }
+  .section-banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--black) 0%, transparent 60%); }
+  .section-banner-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 48px; }
+  .page-section-subtitle { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .page-section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,6vw,72px); font-weight: 300; line-height: 1; color: var(--white); }
+  .page-section-title em { font-style: italic; color: var(--gold-light); }
+  .section-inner { padding: 60px 48px 80px; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1100px; }
+  .about-text { font-size: 14px; line-height: 2; color: rgba(255,255,255,0.75); }
+  .about-text p { margin-bottom: 24px; }
+  .about-steps { display: flex; flex-direction: column; gap: 20px; }
+  .step-item { display: flex; gap: 20px; align-items: flex-start; padding: 20px 24px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); transition: border-color 0.3s; }
+  .step-item:hover { border-color: var(--gold); }
+  .step-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--gold); line-height: 1; flex-shrink: 0; width: 40px; }
+  .step-text { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.7); padding-top: 6px; }
+
+  /* SERVICES */
+  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; max-width: 1100px; }
+  .service-block { padding: 40px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: border-color 0.3s, background 0.3s; }
+  .service-block:hover { border-color: var(--gold); background: rgba(184,151,90,0.04); }
+  .service-block h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--white); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid rgba(184,151,90,0.3); }
+  .service-list { list-style: none; }
+  .service-list li { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.9; padding: 3px 0 3px 16px; position: relative; }
+  .service-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 11px; }
+  .service-list li.sub { padding-left: 32px; }
+  .service-list li.sub::before { left: 16px; content: '·'; }
+
+  /* PRESS */
+  .press-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; max-width: 1100px; }
+  .awards-list { display: flex; flex-direction: column; gap: 16px; }
+  .award-item { padding: 20px 24px; border-left: 2px solid var(--gold); background: rgba(184,151,90,0.04); }
+  .award-year { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .award-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 400; color: var(--white); margin-bottom: 3px; }
+  .award-org { font-size: 11px; color: var(--grey); letter-spacing: 0.08em; }
+  .press-publications h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--white); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .pub-group { margin-bottom: 24px; }
+  .pub-group-name { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .pub-item { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 2; }
+  .online-links { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .online-link { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border: 1px solid rgba(255,255,255,0.07); text-decoration: none; color: var(--white); font-size: 12px; letter-spacing: 0.1em; transition: all 0.25s; }
+  .online-link:hover { border-color: var(--gold); color: var(--gold); }
+  .online-link span { color: var(--gold); font-size: 10px; }
+
+  /* CONTACTS */
+  .contacts-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1100px; }
+  .contact-block { margin-bottom: 36px; }
+  .contact-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .contact-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--white); line-height: 1.5; }
+  .contact-value a { color: var(--gold-light); text-decoration: none; }
+  .contact-value a:hover { color: var(--gold); }
+  .contact-note { font-size: 12px; color: var(--grey); margin-top: 6px; line-height: 1.7; }
+  .map-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); height: 280px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+  .map-box-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: rgba(255,255,255,0.3); }
+  .map-btn { color: var(--gold); text-decoration: none; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--gold); padding: 9px 22px; transition: all 0.2s; }
+  .map-btn:hover { background: var(--gold); color: var(--black); }
+
+  /* FOOTER */
+  footer { padding: 48px 48px 36px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .footer-left { display: flex; flex-direction: column; gap: 6px; }
+  .footer-logo-main { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--white); letter-spacing: 0.1em; }
+  .footer-logo-main span { color: var(--gold); }
+  .footer-logo-sub { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--grey); }
+  .footer-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .footer-contact { font-size: 13px; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; }
+  .footer-contact a { color: var(--gold-light); text-decoration: none; }
+  .footer-contact a:hover { color: var(--gold); }
+  .footer-copy { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; margin-top: 4px; }
+
+  /* LIGHTBOX */
+  .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.97); display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s; }
+  .lightbox.open { display: flex; }
+  .lightbox.visible { opacity: 1; }
+  .lb-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+  .lb-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--white); }
+  .lb-controls { display: flex; gap: 10px; align-items: center; }
+  .lb-btn { width: 38px; height: 38px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--white); font-size: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .lb-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+  .lb-main { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 20px 80px; }
+  .lb-img { max-width: 100%; max-height: calc(100vh - 200px); object-fit: contain; transition: opacity 0.25s; }
+  .lb-img.loading { opacity: 0; }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(10,10,10,0.7); border: 1px solid rgba(255,255,255,0.15); color: var(--white); font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 2; }
+  .lb-nav:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+  .lb-prev { left: 16px; } .lb-next { right: 16px; }
+  .lb-footer { padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+  .lb-counter { font-size: 12px; letter-spacing: 0.15em; color: var(--grey); }
+  .lb-thumbs { display: flex; gap: 5px; overflow-x: auto; max-width: 65%; padding-bottom: 2px; }
+  .lb-thumbs::-webkit-scrollbar { height: 2px; background: rgba(255,255,255,0.05); }
+  .lb-thumbs::-webkit-scrollbar-thumb { background: var(--gold); }
+  .lb-thumb { width: 50px; height: 34px; flex-shrink: 0; object-fit: cover; opacity: 0.4; transition: opacity 0.2s; border: 1px solid transparent; }
+  .lb-thumb:hover { opacity: 0.7; }
+  .lb-thumb.active { opacity: 1; border-color: var(--gold); }
+  .lb-progress { height: 2px; background: rgba(255,255,255,0.07); }
+  .lb-progress-fill { height: 100%; background: var(--gold); transition: width 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    header { padding: 14px 20px; }
+    .logo-sub { display: none; }
+    nav { gap: 16px; }
+    nav a.nav-link { display: none; }
+    .hero { padding: 0 20px 48px; }
+    .filter-bar { padding: 10px 20px; top: 56px; }
+    .gallery-section { padding: 32px 20px 60px; }
+    .about-grid, .services-grid, .press-grid, .contacts-layout { grid-template-columns: 1fr; gap: 40px; }
+    .section-inner { padding: 40px 20px 60px; }
+    .section-banner-content { padding: 24px 20px; }
+    footer { padding: 36px 20px 28px; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .footer-right { align-items: flex-start; }
+    .project-card.large { grid-column: span 1; aspect-ratio: 4/3; }
+    .lb-main { padding: 12px 52px; }
+    .lb-header { padding: 12px 16px; }
+    .lb-footer { padding: 10px 16px; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <a class="logo-block" href="#" onclick="showSection('portfolio');return false;">
-    <div class="logo-name" id="logoName">FIFTH <span>RADIUS</span></div>
+    <div class="logo-main">ПЯТЫЙ <span>РАДИУС</span></div>
+    <div class="logo-sub" data-ru="Архитектурное бюро · Москва" data-en="Architecture Bureau · Moscow">Архитектурное бюро · Москва</div>
   </a>
   <nav>
-    <a href="#" onclick="showSection('portfolio');return false;" class="nav-link active" data-sec="portfolio" id="nav-portfolio">Portfolio</a>
-    <a href="#" onclick="showSection('about');return false;" class="nav-link" data-sec="about" id="nav-about">About</a>
-    <a href="#" onclick="showSection('services');return false;" class="nav-link" data-sec="services" id="nav-services">Services</a>
-    <a href="#" onclick="showSection('press');return false;" class="nav-link" data-sec="press" id="nav-press">Press</a>
-    <a href="#" onclick="showSection('contacts');return false;" class="nav-link" data-sec="contacts" id="nav-contacts">Contacts</a>
+    <a href="#" onclick="showSection('portfolio');return false;" class="nav-link active" data-sec="portfolio" data-ru="Портфолио" data-en="Portfolio">Портфолио</a>
+    <a href="#" onclick="showSection('about');return false;" class="nav-link" data-sec="about" data-ru="О студии" data-en="About">О студии</a>
+    <a href="#" onclick="showSection('services');return false;" class="nav-link" data-sec="services" data-ru="Услуги" data-en="Services">Услуги</a>
+    <a href="#" onclick="showSection('press');return false;" class="nav-link" data-sec="press" data-ru="Пресса" data-en="Press">Пресса</a>
+    <a href="#" onclick="showSection('contacts');return false;" class="nav-link" data-sec="contacts" data-ru="Контакты" data-en="Contacts">Контакты</a>
     <div class="lang-switch">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
   </nav>
 </header>
 
+<!-- PORTFOLIO -->
 <section class="hero" id="sec-portfolio-hero">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-label" id="hero-label">Architecture Bureau</p>
-    <h1 class="hero-title" id="hero-title">Fifth<br><em>Radius</em></h1>
-    <p class="hero-desc" id="hero-desc">We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client's vision.</p>
+    <p class="hero-label" data-ru="Архитектурное бюро · Москва" data-en="Architecture Bureau · Moscow">Архитектурное бюро · Москва</p>
+    <h1 class="hero-title">Пятый<br><em>Радиус</em></h1>
+    <p class="hero-desc" data-ru="Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика." data-en="We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client.">Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика.</p>
     <div class="hero-stats">
-      <div class="stat-item"><span class="stat-num">57</span><span class="stat-label" id="stat1">Completed Projects</span></div>
-      <div class="stat-item"><span class="stat-num">20+</span><span class="stat-label" id="stat2">Years of Practice</span></div>
-      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label" id="stat3">International Awards</span></div>
+      <div class="stat-item"><span class="stat-num">57</span><span class="stat-label" data-ru="Реализованных проектов" data-en="Completed projects">Реализованных проектов</span></div>
+      <div class="stat-item"><span class="stat-num">20+</span><span class="stat-label" data-ru="Лет на рынке" data-en="Years of practice">Лет на рынке</span></div>
+      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label" data-ru="Международных наград" data-en="International awards">Международных наград</span></div>
     </div>
   </div>
 </section>
 
 <div class="filter-bar" id="sec-portfolio-filters">
-  <span class="filter-label" id="filter-label">Type:</span>
-  <button class="filter-btn active" data-filter="all" id="fb-all">All Projects</button>
-  <button class="filter-btn" data-filter="large" id="fb-large">Major Projects</button>
-  <button class="filter-btn" data-filter="medium" id="fb-medium">Country Houses</button>
-  <button class="filter-btn" data-filter="small" id="fb-small">Interiors</button>
-  <input class="search-input" type="text" id="searchInput" placeholder="Search project...">
+  <span class="filter-label" data-ru="Направление:" data-en="Type:">Направление:</span>
+  <button class="filter-btn active" data-filter="all" data-ru="Все работы" data-en="All projects">Все работы</button>
+  <button class="filter-btn" data-filter="large" data-ru="Масштабные проекты" data-en="Major projects">Масштабные проекты</button>
+  <button class="filter-btn" data-filter="medium" data-ru="Загородные дома" data-en="Country houses">Загородные дома</button>
+  <button class="filter-btn" data-filter="small" data-ru="Интерьеры" data-en="Interiors">Интерьеры</button>
+  <input class="search-input" type="text" id="searchInput" data-ru-placeholder="Поиск по проекту..." data-en-placeholder="Search project..." placeholder="Поиск по проекту...">
 </div>
 
 <section class="gallery-section" id="sec-portfolio-gallery">
   <div class="section-header">
-    <h2 class="section-title" id="gallery-title">Our Work</h2>
+    <h2 class="section-title" data-ru="Наши работы" data-en="Our Projects">Наши работы</h2>
+    <span class="results-count" id="resultsCount"></span>
   </div>
   <div class="grid" id="grid"></div>
 </section>
 
+<!-- ABOUT -->
 <section class="page-section" id="sec-about">
   <div class="section-banner">
     <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" id="about-sub">Architecture Bureau · since 2001</p>
-      <h1 class="page-section-title" id="about-title">About <em>Us</em></h1>
+      <p class="page-section-subtitle" data-ru="Архитектурное бюро · Москва · с 2001 года" data-en="Architecture Bureau · Moscow · since 2001">Архитектурное бюро · Москва · с 2001 года</p>
+      <h1 class="page-section-title" data-ru="О <em>студии</em>" data-en="About <em>us</em>">О <em>студии</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="about-grid">
-      <div class="about-text" id="about-text">
-        <p>Architecture bureau <strong>Fifth Radius</strong> was founded in 2001. We provide a complete range of design services for structures of any complexity — from commercial premises to country villas and estates.</p>
-        <p>Our team comprises leading experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide full author supervision, including remote oversight for projects worldwide.</p>
-        <p><strong style="color:var(--gold-light)">5R + partner.</strong> A core principle of the bureau is a genuine partnership with every client. We create unique, fully livable spaces built entirely around each client's vision and wishes.</p>
+      <div class="about-text">
+        <p data-ru="Архитектурное бюро «Пятый Радиус» основано в 2001 году. Мы выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб." data-en="Architecture bureau 'Fifth Radius' was founded in 2001. We provide a complete range of services for architectural design of any complexity — from commercial spaces to country villas and estates.">Архитектурное бюро «Пятый Радиус» основано в 2001 году. Мы выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб.</p>
+        <p data-ru="Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы создают проекты разнообразных стилевых направлений и осуществляют авторский надзор, в том числе удалённый — на объектах в любой точке мира." data-en="Our team comprises top experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide author supervision, including remote oversight for projects worldwide.">Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы создают проекты разнообразных стилевых направлений и осуществляют авторский надзор, в том числе удалённый — на объектах в любой точке мира.</p>
+        <p><strong style="color:var(--gold-light)" data-ru="5R + партнёр." data-en="5R + partner.">5R + партнёр.</strong> <span data-ru="Особое правило бюро — партнёрские отношения с каждым заказчиком. Мы создаём уникальные, полноценные для жизни пространства, в основу которых ложатся пожелания клиента." data-en="Our core principle is a partnership approach with every client. We create unique, fully livable spaces built around each client's vision and wishes.">Особое правило бюро — партнёрские отношения с каждым заказчиком. Мы создаём уникальные, полноценные для жизни пространства, в основу которых ложатся пожелания клиента.</span></p>
       </div>
       <div>
-        <p style="font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" id="steps-title">How We Work · 5 Steps</p>
-        <div class="about-steps" id="about-steps">
-          <div class="step-item"><div class="step-num">1</div><div class="step-text">We learn the client's wishes, answer all questions and develop the project concept.</div></div>
-          <div class="step-item"><div class="step-num">2</div><div class="step-text">We agree on the scope of work, timeline and budget.</div></div>
-          <div class="step-item"><div class="step-num">3</div><div class="step-text">We create the project, align it with the client and select subcontractors.</div></div>
-          <div class="step-item"><div class="step-num">4</div><div class="step-text">We provide author supervision throughout the entire construction cycle and monitor material deliveries.</div></div>
-          <div class="step-item"><div class="step-num">5</div><div class="step-text">We arrange the furniture, hang the curtains and hand over the keys.</div></div>
+        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Как с нами работать · 5 шагов" data-en="How we work · 5 steps">Как с нами работать · 5 шагов</p>
+        <div class="about-steps">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text" data-ru="Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию проекта." data-en="We get to know the client's wishes, answer all questions and develop the project concept.">Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию проекта.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text" data-ru="Согласовываем объём работ, сроки и стоимость." data-en="We agree on the scope of work, timeline and budget.">Согласовываем объём работ, сроки и стоимость.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text" data-ru="Создаём проект, согласуем с заказчиком и подбираем субподрядчиков." data-en="We create the project, align it with the client and select subcontractors.">Создаём проект, согласуем с заказчиком и подбираем субподрядчиков.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text" data-ru="Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов." data-en="We provide author supervision throughout the entire construction cycle and monitor material deliveries.">Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text" data-ru="Расставляем мебель, вешаем шторы и вручаем ключи." data-en="We arrange the furniture, hang the curtains and hand over the keys.">Расставляем мебель, вешаем шторы и вручаем ключи.</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- SERVICES -->
 <section class="page-section" id="sec-services">
   <div class="section-banner">
     <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562774_01.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" id="srv-sub">Full range of architectural &amp; design services</p>
-      <h1 class="page-section-title" id="srv-title"><em>Services</em></h1>
+      <p class="page-section-subtitle" data-ru="Полный спектр услуг" data-en="Full range of services">Полный спектр услуг</p>
+      <h1 class="page-section-title" data-ru="<em>Услуги</em>" data-en="<em>Services</em>"><em>Услуги</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="services-grid">
       <div class="service-block">
-        <h3 id="srv1-h">I. Architectural Design</h3>
-        <ul class="service-list" id="srv1-list">
-          <li>Concept development</li><li>Preliminary design</li>
-          <li>Working drawings (architectural &amp; structural)</li><li>Engineering design</li>
-          <li class="sub">Heating, ventilation &amp; air conditioning</li>
-          <li class="sub">Smart home, security &amp; fire systems</li>
-          <li class="sub">Fireplaces, pools &amp; spa</li>
-          <li class="sub">Landscape design</li>
-          <li class="sub">Alternative &amp; energy-saving systems</li>
-          <li>Author supervision</li><li>General designer services</li>
+        <h3 data-ru="I. Проектирование" data-en="I. Architectural Design">I. Проектирование</h3>
+        <ul class="service-list">
+          <li data-ru="Разработка концепции" data-en="Concept development">Разработка концепции</li>
+          <li data-ru="Стадия П (проект)" data-en="Preliminary design">Стадия П (проект)</li>
+          <li data-ru="Рабочее проектирование (АР, КЖ, КМ, КД)" data-en="Working drawings (architectural, structural)">Рабочее проектирование (АР, КЖ, КМ, КД)</li>
+          <li data-ru="Инженерный проект" data-en="Engineering design">Инженерный проект</li>
+          <li class="sub" data-ru="Отопление, вентиляция, кондиционирование" data-en="Heating, ventilation, air conditioning">Отопление, вентиляция, кондиционирование</li>
+          <li class="sub" data-ru="Умный дом, охранные и пожарные системы" data-en="Smart home, security and fire systems">Умный дом, охранные и пожарные системы</li>
+          <li class="sub" data-ru="Камины, бассейны и СПА" data-en="Fireplaces, pools and spa">Камины, бассейны и СПА</li>
+          <li class="sub" data-ru="Ландшафтные решения" data-en="Landscape design">Ландшафтные решения</li>
+          <li class="sub" data-ru="Альтернативные и энергосберегающие системы" data-en="Alternative and energy-saving systems">Альтернативные и энергосберегающие системы</li>
+          <li data-ru="Авторский надзор" data-en="Author supervision">Авторский надзор</li>
+          <li data-ru="Функции генерального проектировщика" data-en="General designer services">Функции генерального проектировщика</li>
         </ul>
       </div>
       <div class="service-block">
-        <h3 id="srv2-h">II. Interior Design</h3>
-        <ul class="service-list" id="srv2-list">
-          <li>Concept &amp; style development</li><li>Preliminary design</li>
-          <li class="sub">Floor plans</li>
-          <li class="sub">Finishing material selection</li>
-          <li class="sub">Furniture &amp; fabric selection</li>
-          <li class="sub">3D visualisation</li>
-          <li>Working design project with complete drawings</li>
-          <li class="sub">Sections, elevations &amp; details</li>
-          <li class="sub">Specifications for materials, equipment &amp; furniture</li>
-          <li>Author supervision</li>
+        <h3 data-ru="II. Дизайн интерьеров" data-en="II. Interior Design">II. Дизайн интерьеров</h3>
+        <ul class="service-list">
+          <li data-ru="Создание концепции и стилистического решения" data-en="Concept and style development">Создание концепции и стилистического решения</li>
+          <li data-ru="Разработка эскизного проекта" data-en="Preliminary design">Разработка эскизного проекта</li>
+          <li class="sub" data-ru="Планировочные решения" data-en="Floor plans">Планировочные решения</li>
+          <li class="sub" data-ru="Подбор отделочных материалов" data-en="Finishing material selection">Подбор отделочных материалов</li>
+          <li class="sub" data-ru="Подборки мебели и тканей" data-en="Furniture and fabric selection">Подборки мебели и тканей</li>
+          <li class="sub" data-ru="3D визуализация" data-en="3D visualization">3D визуализация</li>
+          <li data-ru="Рабочий дизайн-проект с полным набором чертежей" data-en="Working design project with complete drawings">Рабочий дизайн-проект с полным набором чертежей</li>
+          <li class="sub" data-ru="Разрезы, развёртки, узлы" data-en="Sections, elevations, details">Разрезы, развёртки, узлы</li>
+          <li class="sub" data-ru="Спецификация материалов, оборудования и мебели" data-en="Specifications for materials, equipment and furniture">Спецификация материалов, оборудования и мебели</li>
+          <li data-ru="Авторский надзор" data-en="Author supervision">Авторский надзор</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
+<!-- PRESS -->
 <section class="page-section" id="sec-press">
   <div class="section-banner">
     <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454772_001.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" id="press-sub">Publications &amp; recognition</p>
-      <h1 class="page-section-title" id="press-title">Press <em>&amp;</em> Awards</h1>
+      <p class="page-section-subtitle" data-ru="Публикации и признание" data-en="Publications and recognition">Публикации и признание</p>
+      <h1 class="page-section-title" data-ru="Пресса <em>&amp;</em> Награды" data-en="Press <em>&amp;</em> Awards">Пресса <em>&amp;</em> Награды</h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="press-grid">
       <div>
-        <p style="font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" id="awards-label">Awards</p>
+        <p style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:24px" data-ru="Награды" data-en="Awards">Награды</p>
         <div class="awards-list">
-          <div class="award-item"><div class="award-year">PINWIN 2016</div><div class="award-title" id="aw1-t">1st Place · Country House</div><div class="award-org" id="aw1-o">Integration into Natural Landscape</div></div>
-          <div class="award-item"><div class="award-year">PINWIN 2015–2016</div><div class="award-title" id="aw2-t">Special Jury Prize</div><div class="award-org" id="aw2-o">Best Home Cinema Interior</div></div>
+          <div class="award-item"><div class="award-year">PINWIN 2016</div><div class="award-title" data-ru="1 место · Загородный дом" data-en="1st place · Country house">1 место · Загородный дом</div><div class="award-org" data-ru="Интеграция в реальный ландшафт" data-en="Integration into natural landscape">Интеграция в реальный ландшафт</div></div>
+          <div class="award-item"><div class="award-year">PINWIN 2015–2016</div><div class="award-title" data-ru="Специальный приз жюри" data-en="Special jury prize">Специальный приз жюри</div><div class="award-org" data-ru="Лучший интерьер домашнего кинотеатра" data-en="Best home cinema interior">Лучший интерьер домашнего кинотеатра</div></div>
           <div class="award-item"><div class="award-year">INTERNATIONAL PROPERTY AWARDS 2012</div><div class="award-title">Interior Design Private Residence</div><div class="award-org">International Property Awards</div></div>
           <div class="award-item"><div class="award-year">INTERNATIONAL PROPERTY AWARDS 2012–2013</div><div class="award-title">Architecture Single Residence</div><div class="award-org">International Property Awards</div></div>
-          <div class="award-item"><div class="award-year" id="aw5-y">ARCHITECTURAL AWARD 2010</div><div class="award-title" id="aw5-t">Artistic Metal in Architecture</div></div>
+          <div class="award-item"><div class="award-year" data-ru="АРХИТЕКТУРНАЯ ПРЕМИЯ 2010" data-en="ARCHITECTURAL AWARD 2010">АРХИТЕКТУРНАЯ ПРЕМИЯ 2010</div><div class="award-title" data-ru="Художественный металл в архитектуре" data-en="Artistic metal in architecture">Художественный металл в архитектуре</div></div>
         </div>
       </div>
       <div class="press-publications">
-        <h3 id="pub-title">Publications</h3>
-        <div class="pub-group"><div class="pub-group-name">SALON Magazine (Russia)</div><div class="pub-item">"The Imperial Tailor" · Plein Air in the Interior · House in a House · Theatre "Modern" · Nostalgia for Neoclassicism · In One's Own Estate</div></div>
-        <div class="pub-group"><div class="pub-group-name">Best Interiors · Design Diffusion News (Italy)</div><div class="pub-item">Elusive Combination · Kingdom of Detail · "Liberty l international style", 2002</div></div>
-        <div class="pub-group"><div class="pub-group-name">Dom &amp; Interior · Interior + Design · Beautiful Apartments</div><div class="pub-item">"Every House Needs a Twist" · "Three Steps to Ethnic" · "Meeting Place" · "Sun, Sea and Sand"</div></div>
-        <p style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:24px 0 10px" id="online-label">Online</p>
+        <h3 data-ru="Публикации" data-en="Publications">Публикации</h3>
+        <div class="pub-group"><div class="pub-group-name">Журнал «САЛОН» / SALON Magazine</div><div class="pub-item">«Императорский портной» · Пленэр в интерьере · Дом в доме · Театр «Модерн» · Тоска по неоклассике · В своём поместье</div></div>
+        <div class="pub-group"><div class="pub-group-name">Лучшие интерьеры / Design Diffusion News (IT)</div><div class="pub-item">Неуловимое сочетание · Царство детали · Liberty l international style, 2002</div></div>
+        <div class="pub-group"><div class="pub-group-name">Дом &amp; Интерьер · Интерьер + Дизайн · Красивые квартиры</div><div class="pub-item">«В каждом доме должна быть интрига» · «Три шага в этно» · «Место встречи» · «Солнце, море и песок»</div></div>
+        <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin:24px 0 10px" data-ru="Онлайн" data-en="Online">Онлайн</p>
         <div class="online-links">
           <a class="online-link" href="https://www.houzz.ru/user/fifth-radius" target="_blank"><span>↗</span> Houzz</a>
           <a class="online-link" href="https://www.archrevue.ru/profilearchitect/1939.html" target="_blank"><span>↗</span> ArchRevue</a>
@@ -328,27 +379,28 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
   </div>
 </section>
 
+<!-- CONTACTS -->
 <section class="page-section" id="sec-contacts">
   <div class="section-banner">
     <div class="section-banner-bg" style="background-image:url('https://wsrv.nl/?url=5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" id="ct-sub">Get in touch</p>
-      <h1 class="page-section-title" id="ct-title"><em>Contacts</em></h1>
+      <p class="page-section-subtitle" data-ru="Свяжитесь с нами" data-en="Get in touch">Свяжитесь с нами</p>
+      <h1 class="page-section-title" data-ru="<em>Контакты</em>" data-en="<em>Contacts</em>"><em>Контакты</em></h1>
     </div>
   </div>
   <div class="section-inner">
     <div class="contacts-layout">
       <div>
         <div class="contact-block">
-          <div class="contact-label" id="ct-addr-l">Email</div>
-          <div class="contact-value" id="ct-addr-v"><a href="/cdn-cgi/l/email-protection#4524270570376b3730"><span class="__cf_email__" data-cfemail="6a0b082a5f1844181f">[email&#160;protected]</span></a></div>
-          <div class="contact-note" id="ct-addr-n"></div>
+          <div class="contact-label" data-ru="Адрес" data-en="Address">Адрес</div>
+          <div class="contact-value" data-ru="119002, Москва<br>ул. Арбат, 35, офис 343" data-en="119002, Moscow<br>35 Arbat St., office 343">119002, Москва<br>ул. Арбат, 35, офис 343</div>
+          <div class="contact-note" data-ru="Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж" data-en="Central House of Actors<br>Entrance from Kаloshin Lane, 3rd floor">Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж</div>
         </div>
         <div class="contact-block">
-          <div class="contact-label" id="ct-phone-l">Phone</div>
+          <div class="contact-label" data-ru="Телефон" data-en="Phone">Телефон</div>
           <div class="contact-value"><a href="tel:+79255052058">+7 (925) 505 2058</a></div>
-          <div class="contact-note" id="ct-phone-n">Alexander Burykin, Creative Director</div>
+          <div class="contact-note" data-ru="Александр Бурыкин, творческий руководитель" data-en="Alexander Burykin, Creative Director">Александр Бурыкин, творческий руководитель</div>
         </div>
         <div class="contact-block">
           <div class="contact-label">Website</div>
@@ -356,9 +408,9 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
         </div>
       </div>
       <div>
-        <div class="contact-block" style="margin-top:0">
-          <div class="contact-label">Email</div>
-          <div class="contact-value"><a href="/cdn-cgi/l/email-protection#3554577500471b4740"><span class="__cf_email__" data-cfemail="e38281a3d691cd9196">[email&#160;protected]</span></a></div>
+        <div class="map-box">
+          <div class="map-box-title">ул. Арбат, 35 · Москва</div>
+          <a class="map-btn" href="https://maps.google.com/?q=Арбат+35+Москва" target="_blank" data-ru="Открыть на карте →" data-en="Open in Maps →">Открыть на карте →</a>
         </div>
       </div>
     </div>
@@ -367,26 +419,29 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
 
 <footer>
   <div class="footer-left">
-    <div class="footer-logo-name" id="ft-name">FIFTH <span>RADIUS</span></div>
-    <div class="footer-logo-sub" id="ft-sub">Architecture Bureau · since 2001</div>
+    <div class="footer-logo-main">ПЯТЫЙ <span>РАДИУС</span></div>
+    <div class="footer-logo-sub" data-ru="Архитектурное бюро · Москва · с 2001 года" data-en="Architecture Bureau · Moscow · since 2001">Архитектурное бюро · Москва · с 2001 года</div>
   </div>
   <div class="footer-right">
     <div class="footer-contact"><a href="tel:+79255052058">+7 (925) 505 2058</a></div>
-    <div class="footer-contact"><a href="/cdn-cgi/l/email-protection#0263604237702c7077"><span class="__cf_email__" data-cfemail="badbd8fa8fc894c8cf">[email&#160;protected]</span></a></div>
+    <div class="footer-contact" data-ru="Москва, ул. Арбат, 35, оф. 343" data-en="35 Arbat St., office 343, Moscow">Москва, ул. Арбат, 35, оф. 343</div>
     <div class="footer-contact"><a href="https://5r.ru" target="_blank">5r.ru</a></div>
-    <div class="footer-copy" id="ft-copy">© Fifth Radius, 2001–2025</div>
+    <div class="footer-copy" data-ru="© Пятый Радиус, 2001–2025" data-en="© Fifth Radius, 2001–2025">© Пятый Радиус, 2001–2025</div>
   </div>
 </footer>
 
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <div class="lb-header">
     <div class="lb-title" id="lbTitle"></div>
-    <div><button class="lb-btn" onclick="closeLightbox()">✕</button></div>
+    <div class="lb-controls">
+      <button class="lb-btn" onclick="closeLightbox()" title="Закрыть">✕</button>
+    </div>
   </div>
   <div class="lb-main">
-    <button class="lb-nav lb-prev" onclick="lbNav(-1)">&#8249;</button>
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
     <img class="lb-img" id="lbImg" src="" alt="" referrerpolicy="no-referrer">
-    <button class="lb-nav lb-next" onclick="lbNav(1)">&#8250;</button>
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
   </div>
   <div class="lb-footer">
     <span class="lb-counter" id="lbCounter">1 / 1</span>
@@ -395,194 +450,6 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
   <div class="lb-progress"><div class="lb-progress-fill" id="lbProgressFill"></div></div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-var LANG='en';
-var PROJ_EN={"Широково":"Shirokovo Estate","Дубки":"Dubki Residence","Ильинское":"Ilyinskoye","Стрелковый клуб в Барвихе":"Shooting Club, Barvikha","Селигер":"Seliger Lake House","Олимпийские пруды":"Olympic Ponds","С Видом на город":"City View","Sky View":"Sky View","Фьюжн на Смоленке":"Fusion on Smolenka","Майндорф 2":"Maindorf 2","Вилла Майя":"Villa Maya","Дом на Новой Риге":"House on Novaya Riga","Митино":"Mitino","Чистые пруды":"Chistye Prudy","Домодедово":"Domodedovo","Новгород":"Novgorod","Краснодарский край":"Krasnodar Region","Геленжик":"Gelendzhik","Серебряный бор 2":"Silver Pine Forest 2","Липки":"Lipki","Гостиница в Крыму":"Hotel in Crimea","Детский центр":"Children's Education Centre","Конкурсный проект":"Competition Project","Дом в подмосковье":"House near Moscow","Деловой клуб":"Business Club","На Воробьевых горах 2":"Sparrow Hills 2","Раздоры 2":"Razdory 2","Гринфилд":"Greenfield","Аэропорт":"Airport","Бадези (Сардиния)":"Badesi (Sardinia)","Майндорфф":"Maindorff","МИСиС":"MISIS University","Геленжик 2":"Gelendzhik 2","Прага":"Prague","Санта-Тереза (Сардиния)":"Santa Teresa (Sardinia)","Сивцев Вражек":"Sivtsev Vrazhek","Классика для коллекционера":"Classics for a Collector","Пестовское":"Pestovskoye","Покровское":"Pokrovskoye","Усово":"Usovo","Графские пруды":"Grafskie Prudy","Барвиха":"Barvikha","Волхонка":"Volkhonka","Конкурс":"Competition Entry","Волга":"Volga","Николино":"Nikolino","Графский лес":"Count's Forest","Дом над водопадом":"House over the Waterfall","Раздоры 3":"Razdory 3","Окулинено":"Okulineno","Внуково":"Vnukovo","Офис":"Office","Самара":"Samara","Сухой":"Sukhoi","Раздоры":"Razdory","Каменка":"Kamenka","Ландшафт":"Landscape"};
-
-function getProjectName(ru){return LANG==='en'?(PROJ_EN[ru]||ru):ru;}
-
-function setLang(lang){
-  LANG=lang;
-  document.documentElement.lang=lang;
-  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.textContent===lang.toUpperCase());});
-  var en=lang==='en';
-  document.getElementById('logoName').innerHTML=en?'FIFTH <span>RADIUS</span>':'ПЯТЫЙ <span>РАДИУС</span>';
-  document.getElementById('ft-name').innerHTML=en?'FIFTH <span>RADIUS</span>':'ПЯТЫЙ <span>РАДИУС</span>';
-  document.getElementById('ft-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
-  document.title=en?'Fifth Radius — Architecture Bureau':'Пятый Радиус — Архитектурное бюро';
-  var navT=en?['Portfolio','About','Services','Press','Contacts']:['Портфолио','О студии','Услуги','Пресса','Контакты'];
-  ['nav-portfolio','nav-about','nav-services','nav-press','nav-contacts'].forEach(function(id,i){var e=document.getElementById(id);if(e)e.textContent=navT[i];});
-  document.getElementById('hero-label').textContent=en?'Architecture Bureau':'Архитектурное бюро';
-  document.getElementById('hero-title').innerHTML=en?'Fifth<br><em>Radius</em>':'Пятый<br><em>Радиус</em>';
-  document.getElementById('hero-desc').textContent=en?'We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client\'s vision.':'Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика.';
-  document.getElementById('stat1').textContent=en?'Completed Projects':'Реализованных проектов';
-  document.getElementById('stat2').textContent=en?'Years of Practice':'Лет на рынке';
-  document.getElementById('stat3').textContent=en?'International Awards':'Международных наград';
-  document.getElementById('filter-label').textContent=en?'Type:':'Направление:';
-  document.getElementById('fb-all').textContent=en?'All Projects':'Все работы';
-  document.getElementById('fb-large').textContent=en?'Major Projects':'Масштабные проекты';
-  document.getElementById('fb-medium').textContent=en?'Country Houses':'Загородные дома';
-  document.getElementById('fb-small').textContent=en?'Interiors':'Интерьеры';
-  document.getElementById('searchInput').placeholder=en?'Search project...':'Поиск по проекту...';
-  document.getElementById('gallery-title').textContent=en?'Our Work':'Наши работы';
-  document.getElementById('about-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
-  document.getElementById('about-title').innerHTML=en?'About <em>Us</em>':'О <em>студии</em>';
-  document.getElementById('steps-title').textContent=en?'How We Work · 5 Steps':'Как с нами работать · 5 шагов';
-  if(en){
-    document.getElementById('about-text').innerHTML='<p>Architecture bureau <strong>Fifth Radius</strong> was founded in 2001. We provide a complete range of design services for structures of any complexity — from commercial premises to country villas and estates.</p><p>Our team comprises leading experts in finishing materials, construction technologies and engineering systems. Our architects work across diverse styles and provide full author supervision, including remote oversight for projects worldwide.</p><p><strong style="color:var(--gold-light)">5R + partner.</strong> A core principle of the bureau is a genuine partnership with every client. We create unique, fully livable spaces built entirely around each client\'s vision.</p>';
-    document.getElementById('about-steps').innerHTML='<div class="step-item"><div class="step-num">1</div><div class="step-text">We learn the client\'s wishes, answer all questions and develop the project concept.</div></div><div class="step-item"><div class="step-num">2</div><div class="step-text">We agree on the scope of work, timeline and budget.</div></div><div class="step-item"><div class="step-num">3</div><div class="step-text">We create the project, align it with the client and select subcontractors.</div></div><div class="step-item"><div class="step-num">4</div><div class="step-text">We provide author supervision throughout the entire construction cycle and monitor material deliveries.</div></div><div class="step-item"><div class="step-num">5</div><div class="step-text">We arrange the furniture, hang the curtains and hand over the keys.</div></div>';
-    document.getElementById('srv1-list').innerHTML='<li>Concept development</li><li>Preliminary design</li><li>Working drawings (architectural &amp; structural)</li><li>Engineering design</li><li class="sub">Heating, ventilation &amp; air conditioning</li><li class="sub">Smart home, security &amp; fire systems</li><li class="sub">Fireplaces, pools &amp; spa</li><li class="sub">Landscape design</li><li class="sub">Alternative &amp; energy-saving systems</li><li>Author supervision</li><li>General designer services</li>';
-    document.getElementById('srv2-list').innerHTML='<li>Concept &amp; style development</li><li>Preliminary design</li><li class="sub">Floor plans</li><li class="sub">Finishing material selection</li><li class="sub">Furniture &amp; fabric selection</li><li class="sub">3D visualisation</li><li>Working design project with complete drawings</li><li class="sub">Sections, elevations &amp; details</li><li class="sub">Specifications for materials, equipment &amp; furniture</li><li>Author supervision</li>';
-  } else {
-    document.getElementById('about-text').innerHTML='<p>Архитектурное бюро <strong>«Пятый Радиус»</strong> основано в 2001 году. Выполняем полный комплекс работ при проектировании архитектурных сооружений любой сложности — от деловых помещений до загородных вилл и усадеб.</p><p>Наша команда — лучшие знатоки отделочных материалов, строительных технологий и инженерных систем. Архитекторы ведут авторский надзор, в том числе удалённый.</p><p><strong style="color:var(--gold-light)">5R + партнёр.</strong> Особое правило бюро — партнёрские отношения с каждым заказчиком. Создаём уникальные пространства, в основу которых ложатся пожелания клиента.</p>';
-    document.getElementById('about-steps').innerHTML='<div class="step-item"><div class="step-num">1</div><div class="step-text">Знакомимся с пожеланиями заказчика, отвечаем на вопросы и создаём концепцию.</div></div><div class="step-item"><div class="step-num">2</div><div class="step-text">Согласовываем объём работ, сроки и стоимость.</div></div><div class="step-item"><div class="step-num">3</div><div class="step-text">Создаём проект, согласуем с заказчиком и подбираем субподрядчиков.</div></div><div class="step-item"><div class="step-num">4</div><div class="step-text">Осуществляем авторский надзор всего цикла работ, контролируем поставки материалов.</div></div><div class="step-item"><div class="step-num">5</div><div class="step-text">Расставляем мебель, вешаем шторы и вручаем ключи.</div></div>';
-    document.getElementById('srv1-list').innerHTML='<li>Разработка концепции</li><li>Стадия П (проект)</li><li>Рабочее проектирование (АР, КЖ, КМ, КД)</li><li>Инженерный проект</li><li class="sub">Отопление, вентиляция, кондиционирование</li><li class="sub">Умный дом, охранные и пожарные системы</li><li class="sub">Камины, бассейны и СПА</li><li class="sub">Ландшафтные решения</li><li class="sub">Альтернативные и энергосберегающие системы</li><li>Авторский надзор</li><li>Функции генерального проектировщика</li>';
-    document.getElementById('srv2-list').innerHTML='<li>Создание концепции и стилистического решения</li><li>Разработка эскизного проекта</li><li class="sub">Планировочные решения</li><li class="sub">Подбор отделочных материалов</li><li class="sub">Подборки мебели и тканей</li><li class="sub">3D визуализация</li><li>Рабочий дизайн-проект с полным набором чертежей</li><li class="sub">Разрезы, развёртки, узлы</li><li class="sub">Спецификация материалов, оборудования и мебели</li><li>Авторский надзор</li>';
-  }
-  document.getElementById('srv-sub').textContent=en?'Full range of architectural & design services':'Полный спектр услуг в области архитектуры и дизайна';
-  document.getElementById('srv-title').innerHTML=en?'<em>Services</em>':'<em>Услуги</em>';
-  document.getElementById('srv1-h').textContent=en?'I. Architectural Design':'I. Проектирование';
-  document.getElementById('srv2-h').textContent=en?'II. Interior Design':'II. Дизайн интерьеров';
-  document.getElementById('press-sub').textContent=en?'Publications & recognition':'Публикации и признание';
-  document.getElementById('press-title').innerHTML=en?'Press <em>&amp;</em> Awards':'Пресса <em>&amp;</em> Награды';
-  document.getElementById('awards-label').textContent=en?'Awards':'Награды';
-  document.getElementById('pub-title').textContent=en?'Publications':'Публикации';
-  document.getElementById('online-label').textContent=en?'Online':'Онлайн';
-  document.getElementById('aw1-t').textContent=en?'1st Place · Country House':'1 место · Загородный дом';
-  document.getElementById('aw1-o').textContent=en?'Integration into Natural Landscape':'Интеграция в реальный ландшафт';
-  document.getElementById('aw2-t').textContent=en?'Special Jury Prize':'Специальный приз жюри';
-  document.getElementById('aw2-o').textContent=en?'Best Home Cinema Interior':'Лучший интерьер домашнего кинотеатра';
-  document.getElementById('aw5-y').textContent=en?'ARCHITECTURAL AWARD 2010':'АРХИТЕКТУРНАЯ ПРЕМИЯ 2010';
-  document.getElementById('aw5-t').textContent=en?'Artistic Metal in Architecture':'Художественный металл в архитектуре';
-  document.getElementById('ct-sub').textContent=en?'Get in touch':'Свяжитесь с нами';
-  document.getElementById('ct-title').innerHTML=en?'<em>Contacts</em>':'<em>Контакты</em>';
-  document.getElementById('ct-addr-l').textContent=en?'Email':'Email';
-  document.getElementById('ct-addr-v').innerHTML='<a href="mailto:ab@5r.ru">ab@5r.ru</a>';
-  document.getElementById('ct-addr-n').textContent='';
-  document.getElementById('ct-phone-l').textContent=en?'Phone':'Телефон';
-  document.getElementById('ct-phone-n').textContent=en?'Alexander Burykin, Creative Director':'Александр Бурыкин, творческий руководитель';
-  document.getElementById('ft-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
-  document.getElementById('ft-copy').textContent=en?'© Fifth Radius, 2001–2025':'© Пятый Радиус, 2001–2025';
-  renderGrid(getFiltered());
-}
-
-var currentProject=null,currentImgIdx=0,activeFilter='all',searchQuery='';
-const PROJECTS = [{"name":"Широково","folder":"108","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901968_1.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901977_2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352901989_4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902106_5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902114_6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902193_7.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902516_8.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902561_11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902680_12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352902689_13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904339_14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904348_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904356_17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904364_175.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904449_18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904517_19.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904527_20.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904538_21.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904548_22.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904556_23.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904683_24.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904709_25.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904723_26.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904741_27.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904758_28.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904789_29.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904803_30.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904819_31.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904837_32.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904853_33.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904866_34.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904879_35.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904892_36.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904907_37.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904921_38.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904936_39.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352904946_40.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905027_41.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905046_42.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905065_43.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905085_44.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905096_45.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905106_46.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905123_47.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905139_48.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905165_49.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905180_50.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905195_51.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905209_52.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905231_53.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905246_54.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905261_55.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905278_56.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905290_57.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905303_58.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905314_59.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905325_60.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905338_61.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905350_62.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905364_63.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905376_64.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905387_65.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905399_66.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905412_67.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905426_68.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905439_69.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905455_70.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905466_71.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905478_72.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905494_73.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905508_74.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905522_75.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905536_76.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905552_77.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905568_78.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905581_79.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905594_80.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/108/1352905612_81.jpg"]},{"name":"Дубки","folder":"163","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314196_0011352897703.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314208_0021352897712002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314213_0031352897720003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314220_0041352897727004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314227_0051352897737005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314234_0061352897746006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314240_0071352897756007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314247_0081352897766008.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314253_0091352897775009.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314260_0101352897785010.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314266_0111352897794011.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314272_0121352897803012.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314278_0131352897812013.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314285_0141352897820014.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314291_0151352897829015.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314297_0161352897838016.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314303_0171352897847017.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314309_0181352897857018.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314315_0191352897866019.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314321_0201352897876020.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314327_0211352897885021.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314333_0221352897894022.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314339_0231352897903023.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314345_0241352897912024.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314351_0251352897921025.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314357_0261352897930026.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314363_0271352897939027.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314369_0281352897948028.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314376_0291352897957029.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314382_0301352897966030.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314388_0311352897975031.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314394_0321352897984032.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314400_0331352897993033.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314406_0341352898002034.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314412_0351352898011035.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314418_0361352898020036.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314424_0371352898029037.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314430_0381352898038038.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314436_0391352898047039.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314443_0401352898056040.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314449_0411352898065041.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314455_0421352898074042.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314461_0431352898083043.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314467_0441352898092044.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314473_0451352898101045.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314479_0461352898110046.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314485_0471352898119047.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314491_0481352898128048.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314497_0491352898137049.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314503_0501352898146050.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314509_0511352898155051.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314515_0521352898164052.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314521_0531352898173053.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314527_0541352898182054.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314534_0551352898191055.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314540_0561352898200056.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314546_0571352898209057.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314552_0581352898218058.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314558_0591352898227059.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314564_0601352898236060.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314570_0611352898245061.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314576_0621352898254062.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314582_0631352898263063.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314588_0641352898272064.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314594_0651352898281065.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314600_0661352898290066.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314607_0671352898299067.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314613_0681352898308068.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314619_0691352898317069.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314625_0701352898326070.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314631_0711352898336071.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314637_0721352898345072.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314643_0731352898354073.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314649_0741352898363074.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314655_0751352898372075.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314661_0761352898381076.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314667_0771352898390077.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314673_0781352898399078.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314679_0791352898408079.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314686_0801352898417080.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314692_0811352898426081.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314698_0821352898435082.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314704_0831352898444083.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314710_0841352898453084.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314716_0851352898462085.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314722_0861352898471086.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314728_0871352898480087.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314734_0881352898489088.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314740_0891352898498089.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314746_0901352898507090.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314752_0911352898516091.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314758_0921352898525092.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314764_0931352898534093.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314770_0941352898543094.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314776_0951352898552095.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314782_0961352898561096.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314788_0971352898570097.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314795_0981352898579098.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314801_0991352898588099.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314807_1001352898597100.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314813_1011352898606101.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314819_1021352898615102.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314825_1031352898624103.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314831_1041352898633104.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314837_1051352898642105.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314843_1061352898651106.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314849_1071352898660107.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314855_1081352898669108.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314861_1091352898678109.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314867_1101352898687110.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314873_1111352898696111.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314879_1121352898705112.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314885_1131352898714113.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314891_1141352898723114.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314897_1151352898732115.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314903_1161352898741116.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314910_1171352898750117.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/163/1514314916_1181352898759118.jpg"]},{"name":"Ильинское","folder":"130","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562774_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562790_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562804_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562817_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562831_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562843_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562855_07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562869_08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562882_09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562895_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562909_11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562923_12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562937_13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562951_14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562966_15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562980_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526562994_17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563008_18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563023_19.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563038_20.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563052_21.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563067_22.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563081_23.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563096_24.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563110_25.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563124_26.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563138_27.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563152_28.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563166_29.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563181_30.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563195_31.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563210_32.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563224_33.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563238_34.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563253_35.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563267_36.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563281_37.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563296_38.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563310_39.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563324_40.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563338_41.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563353_42.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563367_43.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563381_44.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563396_45.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563410_46.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563424_47.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563438_48.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563452_49.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563467_50.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563481_51.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/130/1526563495_52.jpg"]},{"name":"Стрелковый клуб в Барвихе","folder":"215","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710230_t3n.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710241_c5n.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710252_c6n.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710262_c1n.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710273_c3n.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/215/1596710284_c4n.jpg"]},{"name":"Селигер","folder":"119","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414369_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414378_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414388_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414397_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414406_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414415_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414424_07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414432_08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414441_09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414450_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414460_11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414469_12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414478_13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/119/1372414487_14.jpg"]},{"name":"Олимпийские пруды","folder":"105","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225671_13528951326.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225688_23528951337.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225696_33528951347.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225703_43528951357.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225710_53528951367.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225718_63528951377.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225725_73528951386.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225733_83528951396.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225740_93528951406.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225748_103528951416.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225755_113528951426.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225762_123528951435.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225769_133528951445.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225776_143528951455.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225783_153528951465.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225791_163528951475.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225798_173528951485.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225805_183528951494.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225812_193528951504.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225820_203528951514.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225827_213528951524.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225834_223528951534.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225841_233528951543.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225849_243528951553.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225856_253528951563.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225863_263528951573.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225870_273528951583.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225877_283528951593.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225885_293528951602.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225892_303528951612.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/105/1514225899_313528951622.jpg"]},{"name":"С Видом на город","folder":"91","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223818_135281516713.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223839_235281516724.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223851_335281516734.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223862_435281516744.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223873_535281516755.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223885_635281516765.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223896_735281516775.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223908_835281516785.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223919_935281516796.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223931_1035281516806.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223942_1135281516816.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223954_1235281516827.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223965_1335281516837.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223977_1435281516847.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514223988_1535281516857.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224000_1635281516867.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224011_1735281516878.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224023_1835281516888.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224034_1935281516898.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224046_2035281516909.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224057_2135281516919.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224069_2235281516929.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224080_2335281516940.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224092_2435281516950.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/91/1514224103_2535281516960.jpg"]},{"name":"Sky View","folder":"97","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224838_13528171521.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224850_23528171532.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224862_33528171542.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224874_43528171553.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224885_53528171563.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224897_63528171573.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224909_73528171584.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224921_83528171594.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224932_93528171604.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224944_103528171614.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224956_113528171625.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224968_123528171635.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224979_133528171645.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514224991_143528171656.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/97/1514225003_153528171666.jpg"]},{"name":"Фьюжн на Смоленке","folder":"111","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226638_135291163211.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226657_235291163222.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226669_335291163233.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226681_435291163244.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226693_535291163255.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226705_635291163266.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226717_735291163277.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226729_835291163288.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226741_935291163299.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226753_1035291163310.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226765_1135291163320.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226777_1235291163331.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226789_1335291163342.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226801_1435291163353.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226813_1535291163364.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226825_1635291163375.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226837_1735291163385.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226849_1835291163396.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226861_1935291163407.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/111/1514226873_2035291163418.jpg"]},{"name":"Майндорф 2","folder":"210","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/210/1553698161_bc021.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/210/1553698175_bc041.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/210/1553698185_bc051.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/210/1553698196_bc061.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/210/1553698208_bc071.jpg"]},{"name":"Вилла Майя","folder":"124","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454772_001.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454780_002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454789_003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454797_004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454806_005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454814_006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454823_007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454831_008.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454840_009.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454848_010.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454856_011.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454865_012.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454873_013.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454882_014.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454890_015.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454899_016.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454907_017.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454916_018.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454924_019.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454933_020.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454941_021.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454950_022.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454958_023.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454967_024.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454975_025.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454984_026.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537454992_027.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455001_028.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455009_029.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455018_030.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455026_031.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455035_032.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455043_033.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455052_034.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455060_035.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455069_036.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455077_037.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455086_038.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455094_039.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455103_040.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455111_041.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455120_042.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/124/1537455128_043.jpg"]},{"name":"Дом на Новой Риге","folder":"125","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245050_011.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245060_021.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245070_031.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245080_041.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245090_051.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245100_061.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245110_071.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245120_081.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245130_091.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245140_101.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245150_111.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245161_121.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245171_131.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245181_141.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245191_151.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245201_161.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245211_171.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245221_181.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245231_191.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245241_201.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/125/1517245251_211.jpg"]},{"name":"Митино","folder":"126","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243183_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243193_20.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243203_30.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243213_40.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243223_50.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243233_60.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243243_70.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243253_80.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243263_90.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243273_100.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243283_110.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243293_120.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243303_130.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243313_140.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243323_150.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243333_160.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243343_170.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/126/1517243353_180.jpg"]},{"name":"Чистые пруды","folder":"127","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883167_1517245292001.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883232_1517245302002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883245_1517245312003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883258_1517245322004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883271_1517245332005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883284_1517245342006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883297_1517245352007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883310_1517245362008.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883323_1517245372009.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/127/1530883336_1517245382010.jpg"]},{"name":"Домодедово","folder":"128","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/128/1372421277_00.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/128/1372421286_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/128/1372421294_02.jpg"]},{"name":"Новгород","folder":"195","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/195/1537876156_imgwy17125450.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/195/1537876165_imgwy17125460.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/195/1537876175_imgwy17125470.jpg"]},{"name":"Краснодарский край","folder":"143","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526481976_001.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526481991_002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482006_003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482021_004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482036_005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482051_006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482066_007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482081_008.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482096_009.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482111_010.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482126_011.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482141_012.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482156_013.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482171_014.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482186_015.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482201_016.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482216_017.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482231_018.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482246_019.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/143/1526482261_020.jpg"]},{"name":"Геленжик","folder":"131","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363894_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363906_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363916_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363926_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363937_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363948_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363958_07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363969_08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363979_09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363989_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375363999_11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364009_12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364019_13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364030_14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364040_15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364050_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/131/1375364060_17.jpg"]},{"name":"Серебряный бор 2","folder":"192","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877124_bc01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877133_bc02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877143_bc03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877152_bc04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877162_bc05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877171_bc06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877181_bc07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877190_bc08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877200_bc09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877209_bc10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877219_bc11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877228_bc12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877238_bc13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/192/1537877247_bc14.jpg"]},{"name":"Липки","folder":"133","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526563928_14012741231.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526563944_24012741281.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526563960_34012741311.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526563976_44012741361.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526563993_54012741411.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564009_64012741461.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564025_74012741501.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564041_84012741561.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564057_94012741601.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564073_104012741641.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564090_114012741691.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564106_124012741731.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564122_134012741791.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564138_144012741841.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/133/1526564154_154012741891.jpg"]},{"name":"Гостиница в Крыму","folder":"134","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200681_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200692_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200703_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200714_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200724_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/134/1401200735_06.jpg"]},{"name":"Детский центр","folder":"135","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396615622_9.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616024_8.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616204_7.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616380_6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616498_5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616631_4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616764_3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616883_2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396616994_1.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617256_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617394_11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617494_12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617612_13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617764_14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617870_15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396617985_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/135/1396618090_17.jpg"]},{"name":"Конкурсный проект","folder":"137","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/137/1529324716_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/137/1529324730_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/137/1529324745_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/137/1529324759_07.jpg"]},{"name":"Дом в подмосковье","folder":"138","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/138/1529324826_15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/138/1529324841_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/138/1529324855_17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/138/1529324870_18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/138/1529324884_19.jpg"]},{"name":"Деловой клуб","folder":"140","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564550_slide01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564568_slide02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564586_slide03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564604_slide04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564622_slide05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/140/1526564641_slide06.jpg"]},{"name":"На Воробьевых горах 2","folder":"142","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/142/1526564639_slide01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/142/1526564658_slide02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/142/1526564676_slide03.jpg"]},{"name":"Раздоры 2","folder":"165","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564759_srazdc01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564778_srazdc02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564797_srazdc03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564816_srazdc04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564835_srazdc05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564854_srazdc06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564873_srazdc07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/165/1526564892_srazdc08.jpg"]},{"name":"Гринфилд","folder":"166","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564881_1.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564897_2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564912_3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564928_4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564943_5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564958_6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564974_7.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/166/1526564989_8.jpg"]},{"name":"Аэропорт","folder":"167","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697811_aero01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697823_aero02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697835_aero03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697846_aero04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697858_aero05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697870_aero06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697881_aero07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697893_aero08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697904_aero09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697916_aero10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697927_aero11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697939_aero12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/167/1553697951_aero13.jpg"]},{"name":"Бадези (Сардиния)","folder":"168","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402459_b09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402469_b10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402478_b11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402488_b12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402498_b13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402507_b14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402517_b15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402526_b16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402536_b17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402546_b18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/168/1538402555_b19.jpg"]},{"name":"Майндорфф","folder":"169","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294582_1.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294596_2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294610_3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294623_4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294637_5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294651_6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294665_7.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294679_8.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294692_9.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294706_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/169/1528294720_11.jpg"]},{"name":"МИСиС","folder":"170","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158641_d2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158652_d3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158664_d4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158675_d5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158687_d6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158698_d7.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158710_d8.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158721_d9.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158733_d10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158744_d11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158755_d12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158767_d13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158778_d14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158790_d15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158801_d16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158813_d17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158824_d18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158836_d19.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158847_d20.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158859_d21.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158870_d22.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158882_d23.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/170/1536158893_d24.jpg"]},{"name":"Геленжик 2","folder":"171","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/171/1526900866_sochi01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/171/1526900882_sochi02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/171/1526900897_sochi03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/171/1526900913_sochi04.jpg"]},{"name":"Прага","folder":"173","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901398_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901414_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901429_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901445_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901460_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901476_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901491_07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901507_08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901522_09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/173/1526901538_10.jpg"]},{"name":"Санта-Тереза (Сардиния)","folder":"172","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402832_ster01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402842_ster02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402851_ster03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402861_ster04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402870_ster05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402880_ster06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402889_ster07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402899_ster08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402908_ster09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402918_ster10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402927_ster11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402937_ster12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402946_ster13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402956_ster14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/172/1538402965_ster15.jpg"]},{"name":"Сивцев Вражек","folder":"174","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901781_14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901797_24.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901812_34.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901828_44.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901843_54.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901859_64.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901874_74.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901889_84.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901905_94.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901920_104.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901936_114.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901951_124.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901967_134.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901982_144.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526901997_154.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902013_164.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902028_174.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902044_184.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902059_194.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902075_204.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902090_214.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902105_224.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902121_234.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902136_244.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902152_254.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902167_264.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/174/1526902183_274.jpg"]},{"name":"Классика для коллекционера","folder":"175","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526901996_slide01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902013_slide02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902030_slide03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902047_slide04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902064_slide05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902081_slide06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902098_slide07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902115_slide08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/175/1526902132_slide09.jpg"]},{"name":"Пестовское","folder":"176","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403246_slide01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403256_slide02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403266_slide03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403276_slide04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403286_slide05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/176/1538403296_slide06.jpg"]},{"name":"Покровское","folder":"177","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/177/1526902180_slide01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/177/1526902197_slide02.jpg"]},{"name":"Усово","folder":"178","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403493_c10000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403503_c20000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403513_c30000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403523_c40000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403533_c50000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403543_c60000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403553_c70000.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/178/1538403563_c80000.jpg"]},{"name":"Графские пруды","folder":"179","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206513_ks01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206527_ks02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206541_ks03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206554_ks04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206568_ks05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206582_ks06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206596_ks07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206609_ks08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206623_ks09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206637_ks10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206651_ks11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206664_ks12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206678_ks13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206692_ks14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206706_ks15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206719_ks16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206733_ks17.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206747_ks18.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206761_ks19.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206774_ks20.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206788_ks21.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/179/1528206802_ks22.jpg"]},{"name":"Барвиха","folder":"205","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665372_fq2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665381_fq3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665391_fq4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665401_fq5.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665410_fq6.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/205/1538665420_fq7.jpg"]},{"name":"Волхонка","folder":"180","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403662_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403672_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403682_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403692_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403702_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403712_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/180/1538403722_07.jpg"]},{"name":"Конкурс","folder":"181","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903769_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903785_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903800_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903816_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903831_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903847_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/181/1526903862_07.jpg"]},{"name":"Волга","folder":"182","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526904983_binder1page03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526904998_binder1page04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905013_binder1page05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905028_binder1page06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905043_binder1page07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905058_binder1page08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905073_binder1page09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905088_binder1page10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905103_binder1page11.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905118_binder1page12.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905133_binder1page13.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905148_binder1page14.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905163_binder1page15.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905178_binder1page16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/182/1526905193_binder1page17.jpg"]},{"name":"Николино","folder":"183","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905350_16.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905365_26.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905380_36.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905395_46.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905410_56.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905426_66.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/183/1526905441_76.jpg"]},{"name":"Графский лес","folder":"184","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404271_001.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404281_002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404291_003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404301_004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404311_005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404321_006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404331_007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404341_008.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404351_009.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404361_010.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404371_011.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404381_012.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/184/1538404391_013.jpg"]},{"name":"Дом над водопадом","folder":"185","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916526_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916542_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916557_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916573_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916588_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/185/1526916604_06.jpg"]},{"name":"Раздоры 3","folder":"198","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/198/1537886968_imgwy17125050.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/198/1537886978_imgwy17125060.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/198/1537886988_imgwy17125070.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/198/1537886998_imgwy17125080.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/198/1537887008_imgwy17125090.jpg"]},{"name":"Окулинено","folder":"186","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/186/1526916589_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/186/1526916604_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/186/1526916619_03.jpg"]},{"name":"Внуково","folder":"188","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657101_unnamedh.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657112_unnamed2h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657124_unnamed3h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657135_unnamed4h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657147_unnamed5h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657158_unnamed6h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657169_unnamed7h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657181_unnamed8h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657192_unnamed9h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657204_unnamed10h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657215_unnamed11h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657227_unnamed12h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657238_unnamed13h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657250_unnamed14h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657261_unnamed15h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657273_unnamed16h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657284_unnamed17h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657296_unnamed18h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657307_unnamed19h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657319_unnamed20h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657330_unnamed21h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657342_unnamed22h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657353_unnamed23h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657365_unnamed24h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657376_unnamed25h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657388_unnamed26h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657399_unnamed27h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657411_unnamed28h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657422_unnamed29h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657434_unnamed30h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657445_unnamed31h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657457_unnamed32h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657468_unnamed33h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657480_unnamed34h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657491_unnamed35h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657503_unnamed36h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657514_unnamed37h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657526_unnamed38h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657537_unnamed39h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657549_unnamed40h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657560_unnamed41h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657572_unnamed42h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657583_unnamed43h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657595_unnamed44h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657606_unnamed45h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657618_unnamed46h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657629_unnamed47h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657641_unnamed48h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657652_unnamed49h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657664_unnamed50h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657675_unnamed51h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657687_unnamed52h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657698_unnamed53h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657710_unnamed54h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657721_unnamed55h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657733_unnamed56h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657744_unnamed57h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657756_unnamed58h.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/188/1538657767_unnamed59h.jpg"]},{"name":"Офис","folder":"189","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917362_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917378_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917393_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917409_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917424_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917440_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/189/1526917455_07.jpg"]},{"name":"Самара","folder":"190","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917488_001.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917504_002.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917519_003.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917535_004.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917550_005.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917566_006.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917581_007.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/190/1526917597_008.jpg"]},{"name":"Сухой","folder":"191","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886793_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886804_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886815_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886825_04.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886836_05.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886847_06.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886857_07.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886868_08.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886879_09.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886889_10.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/191/1537886900_11.jpg"]},{"name":"Раздоры","folder":"136","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564395_q0007hhy-copy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564412_q0023hhy-copy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564428_q0032hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564445_q0039hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564461_q0055hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564477_q0065hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564493_q0082hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564510_q0094hhy.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/136/1526564526_q0110hhy.jpg"]},{"name":"Каменка","folder":"139","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/139/1407419100_01.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/139/1407419111_02.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/139/1407419122_03.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/139/1407419132_04.jpg"]},{"name":"Ландшафт","folder":"213","images":["https://wsrv.nl/?url=5r.ru/wp-content/portfolio/213/1584013116_1.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/213/1584013128_2.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/213/1584013140_3.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/213/1584013152_4.jpg","https://wsrv.nl/?url=5r.ru/wp-content/portfolio/213/1584013164_5.jpg"]}];
-
-
-function renderGrid(projects){
-  var grid=document.getElementById('grid');
-  grid.innerHTML='';
-  if(!projects.length){grid.innerHTML='<div class="no-results">'+(LANG==='en'?'No projects found':'Проекты не найдены')+'</div>';return;}
-  projects.forEach(function(p,i){
-    var isLarge=p.images.length>=40&&i%5===0;
-    var card=document.createElement('div');
-    card.className='project-card'+(isLarge?' large':'');
-    card.style.animationDelay=(i*0.035)+'s';
-    var img=document.createElement('img');
-    img.className='card-img';
-    img.setAttribute('referrerpolicy','no-referrer');
-    img.src=p.images[0];
-    img.alt=p.name;
-    img.loading='lazy';
-    img.onerror=function(){
-      this.style.display='none';
-      var ph=card.querySelector('.card-placeholder');
-      if(!ph){ph=document.createElement('div');ph.className='card-placeholder';ph.textContent=getProjectName(p.name).charAt(0);card.insertBefore(ph,card.firstChild);}
-    };
-    var overlay=document.createElement('div');overlay.className='card-overlay';
-    var num=document.createElement('div');num.className='card-num';num.textContent=String(i+1).padStart(2,'0');
-    var info=document.createElement('div');info.className='card-info';
-    info.innerHTML='<div class="card-name">'+getProjectName(p.name)+'</div><div class="card-meta"><span class="card-arrow">&#8594;</span></div>';
-    card.appendChild(img);card.appendChild(overlay);card.appendChild(num);card.appendChild(info);
-    card.addEventListener('click',function(){openLightbox(p,0);});
-    grid.appendChild(card);
-  });
-}
-
-function getFiltered(){
-  return PROJECTS.filter(function(p){
-    var mf=activeFilter==='all'||(activeFilter==='large'&&p.images.length>=30)||(activeFilter==='medium'&&p.images.length>=10&&p.images.length<30)||(activeFilter==='small'&&p.images.length<10);
-    var ms=(getProjectName(p.name)||p.name).toLowerCase().indexOf(searchQuery.toLowerCase())>=0;
-    return mf&&ms;
-  });
-}
-
-document.querySelectorAll('.filter-btn').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-    btn.classList.add('active');activeFilter=btn.dataset.filter;renderGrid(getFiltered());
-  });
-});
-document.getElementById('searchInput').addEventListener('input',function(e){searchQuery=e.target.value;renderGrid(getFiltered());});
-
-function showSection(name){
-  var pels=['#sec-portfolio-hero','#sec-portfolio-filters','#sec-portfolio-gallery'];
-  pels.forEach(function(sel){var el=document.querySelector(sel);if(el)el.style.display=(name==='portfolio')?'':'none';});
-  document.querySelectorAll('.page-section').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.nav-link').forEach(function(a){a.classList.toggle('active',a.dataset.sec===name);});
-  if(name!=='portfolio'){var sec=document.getElementById('sec-'+name);if(sec){sec.classList.add('active');window.scrollTo(0,0);}}
-  else{window.scrollTo(0,0);}
-}
-
-function openLightbox(project,imgIdx){
-  currentProject=project;currentImgIdx=imgIdx;
-  var lb=document.getElementById('lightbox');
-  lb.style.display='flex';
-  setTimeout(function(){lb.classList.add('visible');},10);
-  document.body.style.overflow='hidden';
-  buildThumbs();updateLightbox();
-}
-
-function closeLightbox(){
-  var lb=document.getElementById('lightbox');
-  lb.classList.remove('visible');
-  setTimeout(function(){lb.style.display='none';},300);
-  document.body.style.overflow='';
-}
-
-function updateLightbox(){
-  var img=document.getElementById('lbImg');
-  var counter=document.getElementById('lbCounter');
-  var title=document.getElementById('lbTitle');
-  var fill=document.getElementById('lbProgressFill');
-  img.classList.add('loading');
-  var src=currentProject.images[currentImgIdx];
-  var ni=new Image();
-  ni.referrerPolicy='no-referrer';
-  ni.onload=function(){img.src=src;img.classList.remove('loading');};
-  ni.onerror=function(){img.src=src;img.classList.remove('loading');};
-  ni.src=src;
-  title.textContent=getProjectName(currentProject.name);
-  counter.textContent=(currentImgIdx+1)+' / '+currentProject.images.length;
-  fill.style.width=((currentImgIdx+1)/currentProject.images.length*100)+'%';
-  document.querySelectorAll('.lb-thumb').forEach(function(t,i){t.classList.toggle('active',i===currentImgIdx);});
-  var at=document.querySelector('.lb-thumb.active');
-  if(at)at.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
-}
-
-function buildThumbs(){
-  var c=document.getElementById('lbThumbs');c.innerHTML='';
-  currentProject.images.forEach(function(src,i){
-    var t=document.createElement('img');
-    t.className='lb-thumb'+(i===0?' active':'');
-    t.src=src;t.loading='lazy';
-    t.setAttribute('referrerpolicy','no-referrer');
-    t.addEventListener('click',function(){currentImgIdx=i;updateLightbox();});
-    c.appendChild(t);
-  });
-}
-
-function lbNav(dir){
-  currentImgIdx=(currentImgIdx+dir+currentProject.images.length)%currentProject.images.length;
-  updateLightbox();
-}
-
-document.addEventListener('keydown',function(e){
-  var lb=document.getElementById('lightbox');
-  if(lb.style.display!=='flex')return;
-  if(e.key==='ArrowRight'||e.key==='ArrowDown')lbNav(1);
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp')lbNav(-1);
-  if(e.key==='Escape')closeLightbox();
-});
-document.
+<script src="app.js"></script>
+</body>
+</html>
