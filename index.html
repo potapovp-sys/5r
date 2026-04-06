@@ -12,13 +12,10 @@
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--white);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden}
 .project-card,.lb-nav,.lb-btn,.filter-btn,.nav-link,.lb-thumb,button,.lang-btn{cursor:pointer}
-header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;background:rgba(10,10,10,0.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.05)}
-.logo-block{display:flex;align-items:center;gap:14px;text-decoration:none}
-.logo-img{height:50px;width:auto}
-.logo-text{display:flex;flex-direction:column;gap:3px}
-.logo-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;letter-spacing:0.2em;color:var(--white);text-transform:uppercase}
+header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 48px;background:rgba(10,10,10,0.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.05)}
+.logo-block{text-decoration:none}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;letter-spacing:0.25em;color:var(--white);text-transform:uppercase}
 .logo-name span{color:var(--gold)}
-.logo-sub{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--grey)}
 nav{display:flex;gap:22px;align-items:center}
 a.nav-link{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-light);text-decoration:none;transition:color .3s}
 a.nav-link:hover,a.nav-link.active{color:var(--gold)}
@@ -176,14 +173,7 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
 
 <header>
   <a class="logo-block" href="#" onclick="showSection('portfolio');return false;">
-    <img class="logo-img" id="logoImg"
-         src="https://5r.ru/wp-content/themes/studio5r/images/logo.png"
-         alt="Fifth Radius" referrerpolicy="no-referrer"
-         onerror="this.style.display='none'">
-    <div class="logo-text">
-      <div class="logo-name" id="logoName">FIFTH <span>RADIUS</span></div>
-      <div class="logo-sub" id="logoSub">Architecture Bureau · Moscow</div>
-    </div>
+    <div class="logo-name" id="logoName">FIFTH <span>RADIUS</span></div>
   </a>
   <nav>
     <a href="#" onclick="showSection('portfolio');return false;" class="nav-link active" data-sec="portfolio" id="nav-portfolio">Portfolio</a>
@@ -202,7 +192,7 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-label" id="hero-label">Architecture Bureau · Moscow</p>
+    <p class="hero-label" id="hero-label">Architecture Bureau</p>
     <h1 class="hero-title" id="hero-title">Fifth<br><em>Radius</em></h1>
     <p class="hero-desc" id="hero-desc">We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client's vision.</p>
     <div class="hero-stats">
@@ -234,7 +224,7 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
     <div class="section-banner-bg" style="background-image:url('https://5r.ru/wp-content/uploads/2017/11/14_M9V0569_G1.jpg')"></div>
     <div class="section-banner-overlay"></div>
     <div class="section-banner-content">
-      <p class="page-section-subtitle" id="about-sub">Architecture Bureau · Moscow · since 2001</p>
+      <p class="page-section-subtitle" id="about-sub">Architecture Bureau · since 2001</p>
       <h1 class="page-section-title" id="about-title">About <em>Us</em></h1>
     </div>
   </div>
@@ -351,9 +341,9 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
     <div class="contacts-layout">
       <div>
         <div class="contact-block">
-          <div class="contact-label" id="ct-addr-l">Address</div>
-          <div class="contact-value" id="ct-addr-v">119002, Moscow<br>35 Arbat St., office 343</div>
-          <div class="contact-note" id="ct-addr-n">Central House of Actors<br>Entrance from Kaloshin Lane, 3rd floor</div>
+          <div class="contact-label" id="ct-addr-l">Email</div>
+          <div class="contact-value" id="ct-addr-v"><a href="mailto:ab@5r.ru">ab@5r.ru</a></div>
+          <div class="contact-note" id="ct-addr-n"></div>
         </div>
         <div class="contact-block">
           <div class="contact-label" id="ct-phone-l">Phone</div>
@@ -366,9 +356,9 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
         </div>
       </div>
       <div>
-        <div class="map-box">
-          <div class="map-box-title" id="map-title">35 Arbat St · Moscow</div>
-          <a class="map-btn" id="map-btn" href="https://maps.google.com/?q=Arbat+35+Moscow" target="_blank">Open in Maps →</a>
+        <div class="contact-block" style="margin-top:0">
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:ab@5r.ru">ab@5r.ru</a></div>
         </div>
       </div>
     </div>
@@ -377,16 +367,12 @@ footer{padding:48px 48px 36px;border-top:1px solid rgba(255,255,255,.07);display
 
 <footer>
   <div class="footer-left">
-    <img class="footer-logo-img" src="https://5r.ru/wp-content/themes/studio5r/images/logo.png"
-         alt="Fifth Radius" referrerpolicy="no-referrer" onerror="this.style.display='none'">
-    <div class="footer-logo-text">
-      <div class="footer-logo-name" id="ft-name">FIFTH <span>RADIUS</span></div>
-      <div class="footer-logo-sub" id="ft-sub">Architecture Bureau · Moscow · since 2001</div>
-    </div>
+    <div class="footer-logo-name" id="ft-name">FIFTH <span>RADIUS</span></div>
+    <div class="footer-logo-sub" id="ft-sub">Architecture Bureau · since 2001</div>
   </div>
   <div class="footer-right">
     <div class="footer-contact"><a href="tel:+79255052058">+7 (925) 505 2058</a></div>
-    <div class="footer-contact" id="ft-addr">35 Arbat St., office 343, Moscow</div>
+    <div class="footer-contact"><a href="mailto:ab@5r.ru">ab@5r.ru</a></div>
     <div class="footer-contact"><a href="https://5r.ru" target="_blank">5r.ru</a></div>
     <div class="footer-copy" id="ft-copy">© Fifth Radius, 2001–2025</div>
   </div>
@@ -421,12 +407,12 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active',b.textContent===lang.toUpperCase());});
   var en=lang==='en';
   document.getElementById('logoName').innerHTML=en?'FIFTH <span>RADIUS</span>':'ПЯТЫЙ <span>РАДИУС</span>';
-  document.getElementById('logoSub').textContent=en?'Architecture Bureau · Moscow':'Архитектурное бюро · Москва';
   document.getElementById('ft-name').innerHTML=en?'FIFTH <span>RADIUS</span>':'ПЯТЫЙ <span>РАДИУС</span>';
+  document.getElementById('ft-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
   document.title=en?'Fifth Radius — Architecture Bureau':'Пятый Радиус — Архитектурное бюро';
   var navT=en?['Portfolio','About','Services','Press','Contacts']:['Портфолио','О студии','Услуги','Пресса','Контакты'];
   ['nav-portfolio','nav-about','nav-services','nav-press','nav-contacts'].forEach(function(id,i){var e=document.getElementById(id);if(e)e.textContent=navT[i];});
-  document.getElementById('hero-label').textContent=en?'Architecture Bureau · Moscow':'Архитектурное бюро · Москва';
+  document.getElementById('hero-label').textContent=en?'Architecture Bureau':'Архитектурное бюро';
   document.getElementById('hero-title').innerHTML=en?'Fifth<br><em>Radius</em>':'Пятый<br><em>Радиус</em>';
   document.getElementById('hero-desc').textContent=en?'We design country residences, urban interiors and public spaces. Every project is a unique solution tailored to each client\'s vision.':'Проектируем загородные резиденции, городские интерьеры и общественные пространства. Каждый объект — уникальное решение для конкретного заказчика.';
   document.getElementById('stat1').textContent=en?'Completed Projects':'Реализованных проектов';
@@ -439,7 +425,7 @@ function setLang(lang){
   document.getElementById('fb-small').textContent=en?'Interiors':'Интерьеры';
   document.getElementById('searchInput').placeholder=en?'Search project...':'Поиск по проекту...';
   document.getElementById('gallery-title').textContent=en?'Our Work':'Наши работы';
-  document.getElementById('about-sub').textContent=en?'Architecture Bureau · Moscow · since 2001':'Архитектурное бюро · Москва · с 2001 года';
+  document.getElementById('about-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
   document.getElementById('about-title').innerHTML=en?'About <em>Us</em>':'О <em>студии</em>';
   document.getElementById('steps-title').textContent=en?'How We Work · 5 Steps':'Как с нами работать · 5 шагов';
   if(en){
@@ -470,15 +456,12 @@ function setLang(lang){
   document.getElementById('aw5-t').textContent=en?'Artistic Metal in Architecture':'Художественный металл в архитектуре';
   document.getElementById('ct-sub').textContent=en?'Get in touch':'Свяжитесь с нами';
   document.getElementById('ct-title').innerHTML=en?'<em>Contacts</em>':'<em>Контакты</em>';
-  document.getElementById('ct-addr-l').textContent=en?'Address':'Адрес';
-  document.getElementById('ct-addr-v').innerHTML=en?'119002, Moscow<br>35 Arbat St., office 343':'119002, Москва<br>ул. Арбат, 35, офис 343';
-  document.getElementById('ct-addr-n').innerHTML=en?'Central House of Actors<br>Entrance from Kaloshin Lane, 3rd floor':'Центральный дом актёра<br>Вход с Калошина переулка, 3 этаж';
+  document.getElementById('ct-addr-l').textContent=en?'Email':'Email';
+  document.getElementById('ct-addr-v').innerHTML='<a href="mailto:ab@5r.ru">ab@5r.ru</a>';
+  document.getElementById('ct-addr-n').textContent='';
   document.getElementById('ct-phone-l').textContent=en?'Phone':'Телефон';
   document.getElementById('ct-phone-n').textContent=en?'Alexander Burykin, Creative Director':'Александр Бурыкин, творческий руководитель';
-  document.getElementById('map-title').textContent=en?'35 Arbat St · Moscow':'ул. Арбат, 35 · Москва';
-  document.getElementById('map-btn').textContent=en?'Open in Maps →':'Открыть на карте →';
-  document.getElementById('ft-sub').textContent=en?'Architecture Bureau · Moscow · since 2001':'Архитектурное бюро · Москва · с 2001 года';
-  document.getElementById('ft-addr').textContent=en?'35 Arbat St., office 343, Moscow':'Москва, ул. Арбат, 35, оф. 343';
+  document.getElementById('ft-sub').textContent=en?'Architecture Bureau · since 2001':'Архитектурное бюро · с 2001 года';
   document.getElementById('ft-copy').textContent=en?'© Fifth Radius, 2001–2025':'© Пятый Радиус, 2001–2025';
   renderGrid(getFiltered());
 }
