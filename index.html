@@ -617,6 +617,43 @@
   <div class="lb-progress"><div class="lb-progress-fill" id="lbProgressFill"></div></div>
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
+
+<script>
+// Inline mobile menu — works even if app.js is cached
+(function() {
+  function initMobileMenu() {
+    var btn = document.querySelector('.mobile-menu-btn');
+    if (!btn) return;
+    btn.addEventListener('click', toggleMenu);
+    document.querySelectorAll('.mobile-nav-close').forEach(function(el) {
+      el.addEventListener('click', toggleMenu);
+    });
+  }
+  function toggleMenu() {
+    var nav = document.getElementById('mobileNav');
+    var btn = document.querySelector('.mobile-menu-btn');
+    if (!nav) return;
+    var isOpen = nav.classList.contains('open');
+    if (isOpen) {
+      nav.classList.remove('visible');
+      setTimeout(function() { nav.classList.remove('open'); }, 300);
+      document.body.style.overflow = '';
+      if (btn) btn.classList.remove('open');
+    } else {
+      nav.classList.add('open');
+      setTimeout(function() { nav.classList.add('visible'); }, 10);
+      document.body.style.overflow = 'hidden';
+      if (btn) btn.classList.add('open');
+    }
+  }
+  window.toggleMobileMenu = toggleMenu;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
+})();
+</script>
 </body>
 </html>
