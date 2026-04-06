@@ -25,6 +25,13 @@ function setLang(lang) {
     }
   });
 
+  // Logo
+  const lm = document.getElementById('logo-main');
+  if (lm) lm.innerHTML = lang === 'ru' ? 'ПЯТЫЙ <span>РАДИУС</span>' : 'FIFTH <span>RADIUS</span>';
+
+  // Title
+  document.title = lang === 'ru' ? 'Пятый Радиус — Архитектурное бюро' : 'Fifth Radius — Architecture Bureau';
+
   // Special: search placeholder
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = lang === 'ru' ? 'Поиск по проекту...' : 'Search project...';
