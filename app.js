@@ -56,10 +56,21 @@ function renderGrid(projects) {
     img.src = p.images[0];
     img.alt = p.name;
     img.loading = 'lazy';
+    img._tries = 0;
     img.onerror = function() {
-      this.style.display = 'none';
-      let ph = card.querySelector('.card-placeholder');
-      if (!ph) { ph = document.createElement('div'); ph.className = 'card-placeholder'; ph.textContent = p.name.charAt(0); card.insertBefore(ph, card.firstChild); }
+      img._tries++;
+      if (img._tries === 1) {
+        // Fallback 1: try images.weserv.nl
+        img.src = p.images[0].replace('https://wsrv.nl/?url=', 'https://images.weserv.nl/?url=');
+      } else if (img._tries === 2) {
+        // Fallback 2: direct URL
+        img.src = 'https://' + p.images[0].replace('https://wsrv.nl/?url=', '');
+      } else {
+        // Final: placeholder with first letter
+        this.style.display = 'none';
+        let ph = card.querySelector('.card-placeholder');
+        if (!ph) { ph = document.createElement('div'); ph.className = 'card-placeholder'; ph.textContent = p.name.charAt(0); card.insertBefore(ph, card.firstChild); }
+      }
     };
 
     const overlay = document.createElement('div'); overlay.className = 'card-overlay';
@@ -129,7 +140,20 @@ function updateLightbox() {
   const ni = new Image();
   ni.referrerPolicy = 'no-referrer';
   ni.onload = () => { img.src = src; img.classList.remove('loading'); };
-  ni.onerror = () => { img.src = src; img.classList.remove('loading'); };
+  ni._tries = 0;
+  ni.onerror = () => {
+    ni._tries++;
+    if (ni._tries === 1) {
+      const fallback = src.replace('https://wsrv.nl/?url=', 'https://images.weserv.nl/?url=');
+      const ni2 = new Image();
+      ni2.onload = () => { img.src = fallback; img.classList.remove('loading'); };
+      ni2.onerror = () => { img.src = 'https://' + src.replace('https://wsrv.nl/?url=', ''); img.classList.remove('loading'); };
+      ni2.src = fallback;
+    } else {
+      img.src = 'https://' + src.replace('https://wsrv.nl/?url=', '');
+      img.classList.remove('loading');
+    }
+  };
   ni.src = src;
   title.textContent = currentProject.name;
   counter.textContent = (currentImgIdx + 1) + ' / ' + currentProject.images.length;
