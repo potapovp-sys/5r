@@ -29,6 +29,10 @@ function setLang(lang) {
   const lm = document.getElementById('logo-main');
   if (lm) lm.innerHTML = lang === 'ru' ? 'ПЯТЫЙ <span>РАДИУС</span>' : 'FIFTH <span>RADIUS</span>';
 
+  // Hero title
+  const ht = document.getElementById('hero-title-el');
+  if (ht) ht.innerHTML = lang === 'ru' ? 'Пятый<br><em>Радиус</em>' : 'Fifth<br><em>Radius</em>';
+
   // Title
   document.title = lang === 'ru' ? 'Пятый Радиус — Архитектурное бюро' : 'Fifth Radius — Architecture Bureau';
 
