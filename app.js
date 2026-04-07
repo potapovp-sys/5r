@@ -270,24 +270,19 @@ function buildMobileSwipe() {
 }
 
 function scrollMobileSwipeTo(idx, animate) {
-  // Always get strip fresh from DOM to avoid stale reference
+  // With CSS scroll snap — use scrollLeft
   const strip = document.getElementById('lbSwipeStrip') || lbSwipeStrip;
   if (!strip) return;
-  const w = strip.parentElement ? strip.parentElement.offsetWidth : window.innerWidth;
-  const x = -idx * w;
-  if (animate) {
-    strip.style.transition = 'transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    lbSwipeAnimating = true;
-    setTimeout(() => {
-      lbSwipeAnimating = false;
-      if (strip.parentElement) strip.style.transition = '';
-      lazyLoadNearby(idx);
-    }, 340);
-  } else {
-    strip.style.transition = '';
-  }
-  strip.style.transform = 'translateX(' + x + 'px)';
+  const container = strip.parentElement;
+  if (!container) return;
+  const w = container.offsetWidth || window.innerWidth;
   currentImgIdx = idx;
+  if (animate) {
+    container.scrollTo({ left: idx * w, behavior: 'smooth' });
+  } else {
+    container.scrollLeft = idx * w;
+  }
+  lazyLoadNearby(idx);
 }
 
 function lazyLoadNearby(idx) {
@@ -348,96 +343,47 @@ function updateCounter() {
 function bindSwipeEvents(strip) {
   if (!strip) return;
 
-  let startX = 0, startY = 0, lastX = 0, lastTime = 0, velocity = 0;
-  let direction = null; // 'horiz' | 'vert' | null
-  let active = false;
+  // Use CSS scroll snap — native iOS performance, no JS touch handling
+  const container = strip.parentElement;
+  if (!container) return;
 
-  function onTouchStart(e) {
-    // Ignore multi-touch
-    if (e.touches.length > 1) { active = false; return; }
-    active = true;
-    startX = lastX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    lastTime = Date.now();
-    velocity = 0;
-    direction = null;
-    strip.style.transition = '';
-  }
+  // Convert strip to horizontal scroll with snap
+  container.style.cssText += '; overflow-x: scroll; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;';
+  container.style.setProperty('overflow-x', 'scroll', 'important');
 
-  function onTouchMove(e) {
-    if (!active || lbSwipeAnimating) return;
-    // Ignore multi-touch
-    if (e.touches.length > 1) { active = false; return; }
+  // Hide scrollbar
+  const style = document.createElement('style');
+  style.textContent = '.lb-main::-webkit-scrollbar { display: none; }';
+  document.head.appendChild(style);
 
-    const dx = e.touches[0].clientX - startX;
-    const dy = e.touches[0].clientY - startY;
+  // Make strip use scroll snap
+  strip.style.cssText = 'display: flex; width: ' + (currentProject.images.length * 100) + '%; transform: none !important; transition: none !important;';
 
-    // Determine direction once on first 8px of movement
-    if (direction === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-      direction = Math.abs(dx) > Math.abs(dy) ? 'horiz' : 'vert';
-    }
+  // Make each item snap
+  strip.querySelectorAll('.lb-swipe-item').forEach(function(item) {
+    item.style.cssText = 'flex: 0 0 ' + (100 / currentProject.images.length) + '%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center;';
+  });
 
-    // If vertical — don't interfere, let page scroll
-    if (direction === 'vert') return;
-    // If direction not yet determined — wait
-    if (direction === null) return;
+  // Scroll to current image
+  const itemW = container.offsetWidth;
+  container.scrollLeft = currentImgIdx * itemW;
 
-    // Horizontal swipe — prevent page scroll
-    e.preventDefault();
-
-    const now = Date.now();
-    const dt = now - lastTime;
-    if (dt > 0) velocity = (e.touches[0].clientX - lastX) / dt;
-    lastX = e.touches[0].clientX;
-    lastTime = now;
-
-    const w = strip.parentElement.offsetWidth || window.innerWidth;
-    const baseX = -currentImgIdx * w;
-    // Rubber band at edges
-    const atStart = currentImgIdx === 0 && dx > 0;
-    const atEnd = currentImgIdx === currentProject.images.length - 1 && dx < 0;
-    const offset = (atStart || atEnd) ? dx * 0.2 : dx;
-    strip.style.transform = 'translateX(' + (baseX + offset) + 'px)';
-  }
-
-  function onTouchEnd(e) {
-    if (!active || direction !== 'horiz') {
-      active = false;
-      return;
-    }
-    active = false;
-
-    const dx = e.changedTouches[0].clientX - startX;
-    const w = strip.parentElement.offsetWidth || window.innerWidth;
-    const total = currentProject.images.length;
-    const threshold = w * 0.2;
-    const velThreshold = 0.25;
-    let newIdx = currentImgIdx;
-
-    if ((dx < -threshold || velocity < -velThreshold) && currentImgIdx < total - 1) {
-      newIdx = currentImgIdx + 1;
-    } else if ((dx > threshold || velocity > velThreshold) && currentImgIdx > 0) {
-      newIdx = currentImgIdx - 1;
-    }
-
-    scrollMobileSwipeTo(newIdx, true);
-    updateDots();
-    updateCounter();
-  }
-
-  function onTouchCancel() {
-    // Snap back to current on cancel
-    active = false;
-    scrollMobileSwipeTo(currentImgIdx, true);
-  }
-
-  strip.addEventListener('touchstart', onTouchStart, { passive: true });
-  // passive: false only needed when we know it's horizontal — but we must register upfront
-  // Solution: use passive:false but only call preventDefault when truly horizontal
-  strip.addEventListener('touchmove', onTouchMove, { passive: false });
-  strip.addEventListener('touchend', onTouchEnd, { passive: true });
-  strip.addEventListener('touchcancel', onTouchCancel, { passive: true });
+  // Listen to scroll to update counter and dots
+  let scrollTimer = null;
+  container.addEventListener('scroll', function() {
+    if (scrollTimer) clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function() {
+      const idx = Math.round(container.scrollLeft / container.offsetWidth);
+      if (idx !== currentImgIdx) {
+        currentImgIdx = idx;
+        lazyLoadNearby(idx);
+        updateDots();
+        updateCounter();
+      }
+    }, 50);
+  }, { passive: true });
 }
+
 
 // ── KEYBOARD (desktop) ──
 document.addEventListener('keydown', function(e) {
