@@ -336,10 +336,11 @@ function bindSwipeEvents(strip, container) {
 
   function getW() { return container.offsetWidth || window.innerWidth; }
 
-  // Use ALL passive:true — never call preventDefault
-  // Instead use pointer-events and CSS touch-action to control scrolling
+  // IMPORTANT: attach to CONTAINER not strip!
+  // Strip moves via transform — on iOS the finger loses contact with moved element
+  // Container stays fixed so touch events always fire reliably
 
-  strip.addEventListener('touchstart', function(e) {
+  container.addEventListener('touchstart', function(e) {
     if (e.touches.length !== 1) { tracking = false; return; }
     tracking = true;
     moved = false;
@@ -350,11 +351,11 @@ function bindSwipeEvents(strip, container) {
     strip.style.transition = '';
   }, { passive: true });
 
-  strip.addEventListener('touchmove', function(e) {
+  container.addEventListener('touchmove', function(e) {
     if (!tracking || e.touches.length !== 1) return;
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
-    // Only track if clearly horizontal
+    // Stop if clearly vertical scroll
     if (!moved && Math.abs(dy) > Math.abs(dx) + 5) {
       tracking = false; return;
     }
@@ -372,10 +373,12 @@ function bindSwipeEvents(strip, container) {
     const atStart = currentImgIdx === 0 && dx > 0;
     const atEnd = currentImgIdx === total - 1 && dx < 0;
     const offset = (atStart || atEnd) ? dx * 0.15 : dx;
-    strip.style.transform = 'translateX(' + (base + offset) + 'px)';
-  }, { passive: true });  // passive:true — no preventDefault ever
+    // Get fresh strip reference each time
+    const s = document.getElementById('lbSwipeStrip');
+    if (s) s.style.transform = 'translateX(' + (base + offset) + 'px)';
+  }, { passive: true });
 
-  strip.addEventListener('touchend', function(e) {
+  container.addEventListener('touchend', function(e) {
     if (!tracking || !moved) { tracking = false; return; }
     tracking = false;
     const dx = e.changedTouches[0].clientX - startX;
@@ -388,9 +391,10 @@ function bindSwipeEvents(strip, container) {
     updateCounter();
   }, { passive: true });
 
-  strip.addEventListener('touchcancel', function() {
+  container.addEventListener('touchcancel', function() {
     tracking = false;
-    scrollMobileSwipeTo(currentImgIdx, true);
+    const s = document.getElementById('lbSwipeStrip');
+    if (s) scrollMobileSwipeTo(currentImgIdx, true);
   }, { passive: true });
 }
 
