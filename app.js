@@ -336,11 +336,7 @@ function bindSwipeEvents(strip, container) {
 
   function getW() { return container.offsetWidth || window.innerWidth; }
 
-  // IMPORTANT: attach to CONTAINER not strip!
-  // Strip moves via transform — on iOS the finger loses contact with moved element
-  // Container stays fixed so touch events always fire reliably
-
-  container.addEventListener('touchstart', function(e) {
+  function onTouchStart(e) {
     if (e.touches.length !== 1) { tracking = false; return; }
     tracking = true;
     moved = false;
@@ -348,17 +344,15 @@ function bindSwipeEvents(strip, container) {
     startY = e.touches[0].clientY;
     lastT = Date.now();
     vel = 0;
-    strip.style.transition = '';
-  }, { passive: true });
+    const s = document.getElementById('lbSwipeStrip');
+    if (s) s.style.transition = '';
+  }
 
-  container.addEventListener('touchmove', function(e) {
+  function onTouchMove(e) {
     if (!tracking || e.touches.length !== 1) return;
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
-    // Stop if clearly vertical scroll
-    if (!moved && Math.abs(dy) > Math.abs(dx) + 5) {
-      tracking = false; return;
-    }
+    if (!moved && Math.abs(dy) > Math.abs(dx) + 5) { tracking = false; return; }
     if (Math.abs(dx) > 5) moved = true;
     if (!moved) return;
 
@@ -368,34 +362,50 @@ function bindSwipeEvents(strip, container) {
     lastX = e.touches[0].clientX;
     lastT = now;
 
+    const s = document.getElementById('lbSwipeStrip');
+    if (!s) return;
     const w = getW();
     const base = -currentImgIdx * w;
     const atStart = currentImgIdx === 0 && dx > 0;
-    const atEnd = currentImgIdx === total - 1 && dx < 0;
-    const offset = (atStart || atEnd) ? dx * 0.15 : dx;
-    // Get fresh strip reference each time
-    const s = document.getElementById('lbSwipeStrip');
-    if (s) s.style.transform = 'translateX(' + (base + offset) + 'px)';
-  }, { passive: true });
+    const atEnd = currentImgIdx === (s.children.length - 1) && dx < 0;
+    s.style.transform = 'translateX(' + (base + (atStart || atEnd ? dx * 0.15 : dx)) + 'px)';
+  }
 
-  container.addEventListener('touchend', function(e) {
+  function onTouchEnd(e) {
     if (!tracking || !moved) { tracking = false; return; }
     tracking = false;
     const dx = e.changedTouches[0].clientX - startX;
     const w = getW();
+    const s = document.getElementById('lbSwipeStrip');
+    const tot = s ? s.children.length : total;
     let idx = currentImgIdx;
-    if ((dx < -w * 0.15 || vel < -0.2) && idx < total - 1) idx++;
+    if ((dx < -w * 0.15 || vel < -0.2) && idx < tot - 1) idx++;
     else if ((dx > w * 0.15 || vel > 0.2) && idx > 0) idx--;
     scrollMobileSwipeTo(idx, true);
     updateDots();
     updateCounter();
-  }, { passive: true });
+  }
 
-  container.addEventListener('touchcancel', function() {
+  function onTouchCancel() {
     tracking = false;
-    const s = document.getElementById('lbSwipeStrip');
-    if (s) scrollMobileSwipeTo(currentImgIdx, true);
-  }, { passive: true });
+    scrollMobileSwipeTo(currentImgIdx, true);
+  }
+
+  // Remove previous listeners using stored reference
+  if (container._swipeHandlers) {
+    const h = container._swipeHandlers;
+    container.removeEventListener('touchstart', h.start);
+    container.removeEventListener('touchmove', h.move);
+    container.removeEventListener('touchend', h.end);
+    container.removeEventListener('touchcancel', h.cancel);
+  }
+
+  // Store and add new listeners
+  container._swipeHandlers = { start: onTouchStart, move: onTouchMove, end: onTouchEnd, cancel: onTouchCancel };
+  container.addEventListener('touchstart', onTouchStart, { passive: true });
+  container.addEventListener('touchmove', onTouchMove, { passive: true });
+  container.addEventListener('touchend', onTouchEnd, { passive: true });
+  container.addEventListener('touchcancel', onTouchCancel, { passive: true });
 }
 
 
