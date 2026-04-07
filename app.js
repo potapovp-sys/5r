@@ -225,73 +225,75 @@ function buildMobileSwipe() {
   // Set title
   document.getElementById('lbTitle').textContent = getProjectName(currentProject.name);
 
-  // Hide desktop image, show swipe strip
+  // Hide desktop elements
   const lbImg = document.getElementById('lbImg');
   lbImg.style.display = 'none';
-  document.querySelector('.lb-nav.lb-prev') && (document.querySelector('.lb-nav.lb-prev').style.display = 'none');
-  document.querySelector('.lb-nav.lb-next') && (document.querySelector('.lb-nav.lb-next').style.display = 'none');
+  const prev = document.querySelector('.lb-nav.lb-prev');
+  const next = document.querySelector('.lb-nav.lb-next');
+  if (prev) prev.style.display = 'none';
+  if (next) next.style.display = 'none';
 
-  // Remove old strip if exists
+  // Remove old strip if exists — this also removes all old event listeners
   const oldStrip = lbMain.querySelector('.lb-swipe-strip');
   if (oldStrip) oldStrip.remove();
 
-  // Create swipe strip
-  lbSwipeStrip = document.createElement('div');
-  lbSwipeStrip.className = 'lb-swipe-strip';
-  lbSwipeStrip.id = 'lbSwipeStrip';
+  // Create new strip
+  const strip = document.createElement('div');
+  strip.className = 'lb-swipe-strip';
+  strip.id = 'lbSwipeStrip';
+  lbSwipeStrip = strip; // update global ref
 
-  const total = currentProject.images.length;
   currentProject.images.forEach((src, i) => {
     const item = document.createElement('div');
     item.className = 'lb-swipe-item';
-    item.dataset.index = i;
-
     const img = document.createElement('img');
     img.setAttribute('referrerpolicy', 'no-referrer');
     img.draggable = false;
-
-    // Lazy load: only load current ± 2
     if (Math.abs(i - currentImgIdx) <= 2) {
       img.src = src;
     } else {
       img.dataset.src = src;
     }
-
     item.appendChild(img);
-    lbSwipeStrip.appendChild(item);
+    strip.appendChild(item);
   });
 
-  lbMain.appendChild(lbSwipeStrip);
+  lbMain.appendChild(strip);
 
-  // Position to current image instantly
-  scrollMobileSwipeTo(currentImgIdx, false);
+  // Position instantly then bind events to THIS strip
+  const w = lbMain.offsetWidth || window.innerWidth;
+  strip.style.transform = 'translateX(' + (-currentImgIdx * w) + 'px)';
+
   buildDots();
   updateCounter();
-  bindSwipeEvents();
+  bindSwipeEvents(strip); // pass strip explicitly
 }
 
 function scrollMobileSwipeTo(idx, animate) {
-  if (!lbSwipeStrip) return;
-  const w = lbSwipeStrip.parentElement.offsetWidth || window.innerWidth;
+  // Always get strip fresh from DOM to avoid stale reference
+  const strip = document.getElementById('lbSwipeStrip') || lbSwipeStrip;
+  if (!strip) return;
+  const w = strip.parentElement ? strip.parentElement.offsetWidth : window.innerWidth;
   const x = -idx * w;
   if (animate) {
-    lbSwipeStrip.style.transition = 'transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    strip.style.transition = 'transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     lbSwipeAnimating = true;
     setTimeout(() => {
       lbSwipeAnimating = false;
-      lbSwipeStrip.style.transition = '';
+      if (strip.parentElement) strip.style.transition = '';
       lazyLoadNearby(idx);
     }, 340);
   } else {
-    lbSwipeStrip.style.transition = '';
+    strip.style.transition = '';
   }
-  lbSwipeStrip.style.transform = 'translateX(' + x + 'px)';
+  strip.style.transform = 'translateX(' + x + 'px)';
   currentImgIdx = idx;
 }
 
 function lazyLoadNearby(idx) {
-  if (!lbSwipeStrip) return;
-  const items = lbSwipeStrip.querySelectorAll('.lb-swipe-item');
+  const strip = document.getElementById('lbSwipeStrip') || lbSwipeStrip;
+  if (!strip) return;
+  const items = strip.querySelectorAll('.lb-swipe-item');
   items.forEach((item, i) => {
     if (Math.abs(i - idx) <= 2) {
       const img = item.querySelector('img');
@@ -343,8 +345,7 @@ function updateCounter() {
 }
 
 // ── TOUCH EVENTS ──────────────────────────────────────────────────
-function bindSwipeEvents() {
-  const strip = lbSwipeStrip;
+function bindSwipeEvents(strip) {
   if (!strip) return;
 
   let startX = 0, startY = 0, lastX = 0, lastTime = 0, velocity = 0;
