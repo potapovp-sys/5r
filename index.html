@@ -164,7 +164,7 @@
   .footer-copy { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; margin-top: 4px; }
 
   /* LIGHTBOX */
-  .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.97); display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s; }
+  .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.97); display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s; overscroll-behavior: contain; touch-action: manipulation; }
   .lightbox.open { display: flex; }
   .lightbox.visible { opacity: 1; }
   .lb-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
@@ -314,7 +314,9 @@
     .lb-swipe-strip {
       display: flex; height: 100%; width: 100%;
       will-change: transform;
-      touch-action: pan-y pinch-zoom;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .lb-swipe-item {
       flex: 0 0 100%; width: 100%; height: 100%;
@@ -620,8 +622,13 @@
 <script src="app.js?v=5"></script>
 
 <script>
-// Inline mobile menu
+// Inline mobile menu + language support
 (function() {
+  var LABELS = {
+    ru: { portfolio: 'Портфолио', about: 'О студии', services: 'Услуги', press: 'Пресса', contacts: 'Контакты' },
+    en: { portfolio: 'Portfolio', about: 'About', services: 'Services', press: 'Press', contacts: 'Contacts' }
+  };
+
   function toggleMenu(e) {
     if (e) e.stopPropagation();
     var nav = document.getElementById('mobileNav');
@@ -641,13 +648,44 @@
     }
   }
   window.toggleMobileMenu = toggleMenu;
+
+  // Patch setLang to also update mobile nav labels
+  function patchSetLang() {
+    if (typeof setLang !== 'function') return;
+    var orig = window.setLang;
+    window.setLang = function(lang) {
+      orig(lang);
+      updateMobileNavLabels(lang);
+      updateMobileLangBtns(lang);
+    };
+    // Apply current lang immediately
+    var cur = (typeof LANG !== 'undefined' && LANG.current) || 'en';
+    updateMobileNavLabels(cur);
+    updateMobileLangBtns(cur);
+  }
+
+  function updateMobileNavLabels(lang) {
+    var labels = LABELS[lang] || LABELS.en;
+    var ids = ['mnav-portfolio','mnav-about','mnav-services','mnav-press','mnav-contacts'];
+    var keys = ['portfolio','about','services','press','contacts'];
+    ids.forEach(function(id, i) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = labels[keys[i]];
+    });
+  }
+
+  function updateMobileLangBtns(lang) {
+    document.querySelectorAll('.mobile-lang .lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang.toLowerCase());
+    });
+  }
+
   function init() {
     var btn = document.querySelector('.mobile-menu-btn');
     if (btn) btn.addEventListener('click', toggleMenu);
     document.querySelectorAll('.mobile-nav-close').forEach(function(el) {
       el.addEventListener('click', toggleMenu);
     });
-    // Mobile nav links close menu on click
     document.querySelectorAll('.mobile-nav a').forEach(function(a) {
       a.addEventListener('click', function() {
         var nav = document.getElementById('mobileNav');
@@ -657,7 +695,10 @@
         if (btn) btn.classList.remove('open');
       });
     });
+    // Patch after app.js loads
+    setTimeout(patchSetLang, 100);
   }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

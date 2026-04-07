@@ -1,6 +1,5 @@
 const PROJ_EN = {"Широково": "Shirokovo Estate", "Ильинское": "Ilyinskoye", "Стрелковый клуб в Барвихе": "Shooting Club, Barvikha", "Селигер": "Seliger Lake House", "Олимпийские пруды": "Olympic Ponds", "С Видом на город": "City View", "Sky View": "Sky View", "Фьюжн на Смоленке": "Fusion on Smolenka", "Майндорф 2": "Maindorf 2", "Вилла Майя": "Villa Maya", "Дом на Новой Риге": "House on Novaya Riga", "Митино": "Mitino", "Чистые пруды": "Chistye Prudy", "Домодедово": "Domodedovo", "Новгород": "Novgorod", "Краснодарский край": "Krasnodar Region", "Геленжик": "Gelendzhik", "Серебряный бор 2": "Silver Pine Forest 2", "Липки": "Lipki", "Гостиница в Крыму": "Hotel in Crimea", "Детский центр": "Education Centre", "Конкурсный проект": "Competition Project", "Дом в подмосковье": "House near Moscow", "Деловой клуб": "Business Club", "На Воробьевых горах 2": "Sparrow Hills 2", "Раздоры 2": "Razdory 2", "Гринфилд": "Greenfield", "Аэропорт": "Airport", "Бадези (Сардиния)": "Badesi, Sardinia", "Майндорфф": "Maindorff", "МИСиС": "MISIS University", "Геленжик 2": "Gelendzhik 2", "Прага": "Prague", "Санта-Тереза (Сардиния)": "Santa Teresa, Sardinia", "Сивцев Вражек": "Sivtsev Vrazhek", "Классика для коллекционера": "Classics for a Collector", "Пестовское": "Pestovskoye", "Покровское": "Pokrovskoye", "Усово": "Usovo", "Графские пруды": "Grafskie Prudy", "Барвиха": "Barvikha", "Волхонка": "Volkhonka", "Конкурс": "Competition Entry", "Волга": "Volga", "Николино": "Nikolino", "Графский лес": "Count's Forest", "Дом над водопадом": "House over the Waterfall", "Раздоры 3": "Razdory 3", "Окулинено": "Okulineno", "Внуково": "Vnukovo", "Офис": "Office", "Самара": "Samara", "Раздоры": "Razdory", "Каменка": "Kamenka", "Ландшафт": "Landscape"};
 
-// v5
 function getProjectName(ru) {
   return LANG.current === 'en' ? (PROJ_EN[ru] || ru) : ru;
 }
@@ -349,66 +348,94 @@ function bindSwipeEvents() {
   if (!strip) return;
 
   let startX = 0, startY = 0, lastX = 0, lastTime = 0, velocity = 0;
-  let isHoriz = null;
+  let direction = null; // 'horiz' | 'vert' | null
+  let active = false;
 
-  strip.addEventListener('touchstart', (e) => {
+  function onTouchStart(e) {
+    // Ignore multi-touch
+    if (e.touches.length > 1) { active = false; return; }
+    active = true;
     startX = lastX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     lastTime = Date.now();
     velocity = 0;
-    isHoriz = null;
+    direction = null;
     strip.style.transition = '';
-  }, { passive: true });
+  }
 
-  strip.addEventListener('touchmove', (e) => {
-    if (lbSwipeAnimating) return;
+  function onTouchMove(e) {
+    if (!active || lbSwipeAnimating) return;
+    // Ignore multi-touch
+    if (e.touches.length > 1) { active = false; return; }
+
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
 
-    // Determine direction on first significant move
-    if (isHoriz === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-      isHoriz = Math.abs(dx) > Math.abs(dy);
+    // Determine direction once on first 8px of movement
+    if (direction === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      direction = Math.abs(dx) > Math.abs(dy) ? 'horiz' : 'vert';
     }
-    if (!isHoriz) return;
 
+    // If vertical — don't interfere, let page scroll
+    if (direction === 'vert') return;
+    // If direction not yet determined — wait
+    if (direction === null) return;
+
+    // Horizontal swipe — prevent page scroll
     e.preventDefault();
 
     const now = Date.now();
-    velocity = (e.touches[0].clientX - lastX) / (now - lastTime + 1);
+    const dt = now - lastTime;
+    if (dt > 0) velocity = (e.touches[0].clientX - lastX) / dt;
     lastX = e.touches[0].clientX;
     lastTime = now;
 
-    const w = strip.parentElement.offsetWidth;
+    const w = strip.parentElement.offsetWidth || window.innerWidth;
     const baseX = -currentImgIdx * w;
     // Rubber band at edges
-    let offset = dx;
     const atStart = currentImgIdx === 0 && dx > 0;
     const atEnd = currentImgIdx === currentProject.images.length - 1 && dx < 0;
-    if (atStart || atEnd) offset = dx * 0.25;
+    const offset = (atStart || atEnd) ? dx * 0.2 : dx;
     strip.style.transform = 'translateX(' + (baseX + offset) + 'px)';
-  }, { passive: false });
+  }
 
-  strip.addEventListener('touchend', (e) => {
-    if (!isHoriz) return;
+  function onTouchEnd(e) {
+    if (!active || direction !== 'horiz') {
+      active = false;
+      return;
+    }
+    active = false;
+
     const dx = e.changedTouches[0].clientX - startX;
-    const w = strip.parentElement.offsetWidth;
+    const w = strip.parentElement.offsetWidth || window.innerWidth;
     const total = currentProject.images.length;
-
-    // Determine if we should snap to next/prev
     const threshold = w * 0.2;
-    const velocityThreshold = 0.3;
+    const velThreshold = 0.25;
     let newIdx = currentImgIdx;
 
-    if ((dx < -threshold || velocity < -velocityThreshold) && currentImgIdx < total - 1) {
+    if ((dx < -threshold || velocity < -velThreshold) && currentImgIdx < total - 1) {
       newIdx = currentImgIdx + 1;
-    } else if ((dx > threshold || velocity > velocityThreshold) && currentImgIdx > 0) {
+    } else if ((dx > threshold || velocity > velThreshold) && currentImgIdx > 0) {
       newIdx = currentImgIdx - 1;
     }
 
     scrollMobileSwipeTo(newIdx, true);
     updateDots();
     updateCounter();
-  }, { passive: true });
+  }
+
+  function onTouchCancel() {
+    // Snap back to current on cancel
+    active = false;
+    scrollMobileSwipeTo(currentImgIdx, true);
+  }
+
+  strip.addEventListener('touchstart', onTouchStart, { passive: true });
+  // passive: false only needed when we know it's horizontal — but we must register upfront
+  // Solution: use passive:false but only call preventDefault when truly horizontal
+  strip.addEventListener('touchmove', onTouchMove, { passive: false });
+  strip.addEventListener('touchend', onTouchEnd, { passive: true });
+  strip.addEventListener('touchcancel', onTouchCancel, { passive: true });
 }
 
 // ── KEYBOARD (desktop) ──
