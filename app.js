@@ -329,57 +329,70 @@ function updateCounter() {
 function bindSwipeEvents(strip, container) {
   if (!strip || !container) return;
 
-  let startX = 0, startY = 0, lastX = 0, lastT = 0, vel = 0;
-  let dir = null, active = false;
   const total = currentProject.images.length;
+  let startX = 0, startY = 0, lastX = 0, lastT = 0;
+  let vel = 0, tracking = false, moved = false;
 
   function getW() { return container.offsetWidth || window.innerWidth; }
 
-  strip.addEventListener('touchstart', e => {
-    if (e.touches.length > 1) return;
-    active = true;
+  // Use ALL passive:true — never call preventDefault
+  // Instead use pointer-events and CSS touch-action to control scrolling
+
+  strip.addEventListener('touchstart', function(e) {
+    if (e.touches.length !== 1) { tracking = false; return; }
+    tracking = true;
+    moved = false;
     startX = lastX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     lastT = Date.now();
-    vel = 0; dir = null;
+    vel = 0;
     strip.style.transition = '';
   }, { passive: true });
 
-  strip.addEventListener('touchmove', e => {
-    if (!active || e.touches.length > 1) return;
+  strip.addEventListener('touchmove', function(e) {
+    if (!tracking || e.touches.length !== 1) return;
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
-    if (!dir && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-      dir = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+    // Only track if clearly horizontal
+    if (!moved && Math.abs(dy) > Math.abs(dx) + 5) {
+      tracking = false; return;
     }
-    if (dir !== 'h') return;
-    e.preventDefault();
-    const now = Date.now(); const dt = now - lastT;
-    if (dt > 0) vel = (e.touches[0].clientX - lastX) / dt;
-    lastX = e.touches[0].clientX; lastT = now;
+    if (Math.abs(dx) > 5) moved = true;
+    if (!moved) return;
+
+    const now = Date.now();
+    const dt = Math.max(now - lastT, 1);
+    vel = (e.touches[0].clientX - lastX) / dt;
+    lastX = e.touches[0].clientX;
+    lastT = now;
+
     const w = getW();
     const base = -currentImgIdx * w;
-    const atEdge = (currentImgIdx === 0 && dx > 0) || (currentImgIdx === total-1 && dx < 0);
-    strip.style.transform = 'translateX(' + (base + (atEdge ? dx*0.2 : dx)) + 'px)';
-  }, { passive: false });
+    const atStart = currentImgIdx === 0 && dx > 0;
+    const atEnd = currentImgIdx === total - 1 && dx < 0;
+    const offset = (atStart || atEnd) ? dx * 0.15 : dx;
+    strip.style.transform = 'translateX(' + (base + offset) + 'px)';
+  }, { passive: true });  // passive:true — no preventDefault ever
 
-  strip.addEventListener('touchend', e => {
-    if (!active || dir !== 'h') { active = false; return; }
-    active = false;
+  strip.addEventListener('touchend', function(e) {
+    if (!tracking || !moved) { tracking = false; return; }
+    tracking = false;
     const dx = e.changedTouches[0].clientX - startX;
     const w = getW();
     let idx = currentImgIdx;
-    if ((dx < -w*0.2 || vel < -0.3) && idx < total-1) idx++;
-    else if ((dx > w*0.2 || vel > 0.3) && idx > 0) idx--;
+    if ((dx < -w * 0.15 || vel < -0.2) && idx < total - 1) idx++;
+    else if ((dx > w * 0.15 || vel > 0.2) && idx > 0) idx--;
     scrollMobileSwipeTo(idx, true);
-    updateDots(); updateCounter();
+    updateDots();
+    updateCounter();
   }, { passive: true });
 
-  strip.addEventListener('touchcancel', () => {
-    active = false;
+  strip.addEventListener('touchcancel', function() {
+    tracking = false;
     scrollMobileSwipeTo(currentImgIdx, true);
   }, { passive: true });
 }
+
 
 // ── KEYBOARD (desktop) ──
 document.addEventListener('keydown', function(e) {
