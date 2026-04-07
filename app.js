@@ -221,27 +221,24 @@ function lbNav(dir) {
 // ── MOBILE SWIPE ──────────────────────────────────────────────────
 function buildMobileSwipe() {
   const lbMain = document.querySelector('.lb-main');
-
-  // Set title
   document.getElementById('lbTitle').textContent = getProjectName(currentProject.name);
 
   // Hide desktop elements
-  const lbImg = document.getElementById('lbImg');
-  lbImg.style.display = 'none';
-  const prev = document.querySelector('.lb-nav.lb-prev');
-  const next = document.querySelector('.lb-nav.lb-next');
-  if (prev) prev.style.display = 'none';
-  if (next) next.style.display = 'none';
+  document.getElementById('lbImg').style.display = 'none';
+  ['lb-prev','lb-next'].forEach(cls => {
+    const el = lbMain.querySelector('.' + cls);
+    if (el) el.style.display = 'none';
+  });
 
-  // Remove old strip if exists — this also removes all old event listeners
-  const oldStrip = lbMain.querySelector('.lb-swipe-strip');
-  if (oldStrip) oldStrip.remove();
+  // Remove old strip
+  const old = lbMain.querySelector('.lb-swipe-strip');
+  if (old) old.remove();
 
-  // Create new strip
+  // Build strip
   const strip = document.createElement('div');
   strip.className = 'lb-swipe-strip';
   strip.id = 'lbSwipeStrip';
-  lbSwipeStrip = strip; // update global ref
+  lbSwipeStrip = strip;
 
   currentProject.images.forEach((src, i) => {
     const item = document.createElement('div');
@@ -249,38 +246,38 @@ function buildMobileSwipe() {
     const img = document.createElement('img');
     img.setAttribute('referrerpolicy', 'no-referrer');
     img.draggable = false;
-    if (Math.abs(i - currentImgIdx) <= 2) {
-      img.src = src;
-    } else {
-      img.dataset.src = src;
-    }
+    if (Math.abs(i - currentImgIdx) <= 2) img.src = src;
+    else img.dataset.src = src;
     item.appendChild(img);
     strip.appendChild(item);
   });
 
   lbMain.appendChild(strip);
 
-  // Position instantly then bind events to THIS strip
-  const w = lbMain.offsetWidth || window.innerWidth;
-  strip.style.transform = 'translateX(' + (-currentImgIdx * w) + 'px)';
-
-  buildDots();
-  updateCounter();
-  bindSwipeEvents(strip); // pass strip explicitly
+  // Position to current image
+  setTimeout(() => {
+    const w = lbMain.offsetWidth || window.innerWidth;
+    strip.style.transform = 'translateX(' + (-currentImgIdx * w) + 'px)';
+    buildDots();
+    updateCounter();
+    bindSwipeEvents(strip, lbMain);
+  }, 0);
 }
 
 function scrollMobileSwipeTo(idx, animate) {
-  // With CSS scroll snap — use scrollLeft
   const strip = document.getElementById('lbSwipeStrip') || lbSwipeStrip;
   if (!strip) return;
-  const container = strip.parentElement;
-  if (!container) return;
-  const w = container.offsetWidth || window.innerWidth;
+  const lbMain = strip.parentElement;
+  if (!lbMain) return;
+  const w = lbMain.offsetWidth || window.innerWidth;
   currentImgIdx = idx;
   if (animate) {
-    container.scrollTo({ left: idx * w, behavior: 'smooth' });
+    strip.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)';
+    strip.style.transform = 'translateX(' + (-idx * w) + 'px)';
+    setTimeout(() => { strip.style.transition = ''; }, 340);
   } else {
-    container.scrollLeft = idx * w;
+    strip.style.transition = '';
+    strip.style.transform = 'translateX(' + (-idx * w) + 'px)';
   }
   lazyLoadNearby(idx);
 }
@@ -288,102 +285,101 @@ function scrollMobileSwipeTo(idx, animate) {
 function lazyLoadNearby(idx) {
   const strip = document.getElementById('lbSwipeStrip') || lbSwipeStrip;
   if (!strip) return;
-  const items = strip.querySelectorAll('.lb-swipe-item');
-  items.forEach((item, i) => {
+  strip.querySelectorAll('.lb-swipe-item').forEach((item, i) => {
     if (Math.abs(i - idx) <= 2) {
       const img = item.querySelector('img');
-      if (img && !img.src && img.dataset.src) {
-        img.src = img.dataset.src;
-      }
+      if (img && !img.src && img.dataset.src) img.src = img.dataset.src;
     }
   });
 }
 
 function buildDots() {
-  const dotsEl = document.getElementById('lbDots');
-  if (!dotsEl) return;
-  dotsEl.innerHTML = '';
-  const total = currentProject.images.length;
-  // Show max 7 dots with scaling effect
-  const maxDots = Math.min(total, 7);
-  for (let i = 0; i < maxDots; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'lb-dot' + (i === 0 ? ' active' : '');
-    dotsEl.appendChild(dot);
+  const el = document.getElementById('lbDots');
+  if (!el) return;
+  el.innerHTML = '';
+  const max = Math.min(currentProject.images.length, 7);
+  for (let i = 0; i < max; i++) {
+    const d = document.createElement('div');
+    d.className = 'lb-dot' + (i === 0 ? ' active' : '');
+    el.appendChild(d);
   }
 }
 
 function updateDots() {
-  const dotsEl = document.getElementById('lbDots');
-  if (!dotsEl) return;
+  const el = document.getElementById('lbDots');
+  if (!el) return;
   const total = currentProject.images.length;
-  const dots = dotsEl.querySelectorAll('.lb-dot');
-  const maxDots = dots.length;
-
-  if (maxDots === 0) return;
-
-  // Map currentImgIdx to dot position
+  const dots = el.querySelectorAll('.lb-dot');
+  if (!dots.length) return;
   const ratio = total > 1 ? currentImgIdx / (total - 1) : 0;
-  const dotPos = ratio * (maxDots - 1);
-
-  dots.forEach((dot, i) => {
-    const dist = Math.abs(i - dotPos);
-    dot.classList.remove('active', 'near');
-    if (dist < 0.5) dot.classList.add('active');
-    else if (dist < 1.5) dot.classList.add('near');
+  const pos = ratio * (dots.length - 1);
+  dots.forEach((d, i) => {
+    const dist = Math.abs(i - pos);
+    d.classList.remove('active','near');
+    if (dist < 0.5) d.classList.add('active');
+    else if (dist < 1.5) d.classList.add('near');
   });
 }
 
 function updateCounter() {
-  const counter = document.getElementById('lbCounter');
-  if (counter) counter.textContent = (currentImgIdx + 1) + ' / ' + currentProject.images.length;
+  const el = document.getElementById('lbCounter');
+  if (el) el.textContent = (currentImgIdx + 1) + ' / ' + currentProject.images.length;
 }
 
-// ── TOUCH EVENTS ──────────────────────────────────────────────────
-function bindSwipeEvents(strip) {
-  if (!strip) return;
+function bindSwipeEvents(strip, container) {
+  if (!strip || !container) return;
 
-  // Use CSS scroll snap — native iOS performance, no JS touch handling
-  const container = strip.parentElement;
-  if (!container) return;
+  let startX = 0, startY = 0, lastX = 0, lastT = 0, vel = 0;
+  let dir = null, active = false;
+  const total = currentProject.images.length;
 
-  // Convert strip to horizontal scroll with snap
-  container.style.cssText += '; overflow-x: scroll; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;';
-  container.style.setProperty('overflow-x', 'scroll', 'important');
+  function getW() { return container.offsetWidth || window.innerWidth; }
 
-  // Hide scrollbar
-  const style = document.createElement('style');
-  style.textContent = '.lb-main::-webkit-scrollbar { display: none; }';
-  document.head.appendChild(style);
+  strip.addEventListener('touchstart', e => {
+    if (e.touches.length > 1) return;
+    active = true;
+    startX = lastX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    lastT = Date.now();
+    vel = 0; dir = null;
+    strip.style.transition = '';
+  }, { passive: true });
 
-  // Make strip use scroll snap
-  strip.style.cssText = 'display: flex; width: ' + (currentProject.images.length * 100) + '%; transform: none !important; transition: none !important;';
+  strip.addEventListener('touchmove', e => {
+    if (!active || e.touches.length > 1) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    if (!dir && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+      dir = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+    }
+    if (dir !== 'h') return;
+    e.preventDefault();
+    const now = Date.now(); const dt = now - lastT;
+    if (dt > 0) vel = (e.touches[0].clientX - lastX) / dt;
+    lastX = e.touches[0].clientX; lastT = now;
+    const w = getW();
+    const base = -currentImgIdx * w;
+    const atEdge = (currentImgIdx === 0 && dx > 0) || (currentImgIdx === total-1 && dx < 0);
+    strip.style.transform = 'translateX(' + (base + (atEdge ? dx*0.2 : dx)) + 'px)';
+  }, { passive: false });
 
-  // Make each item snap
-  strip.querySelectorAll('.lb-swipe-item').forEach(function(item) {
-    item.style.cssText = 'flex: 0 0 ' + (100 / currentProject.images.length) + '%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center;';
-  });
+  strip.addEventListener('touchend', e => {
+    if (!active || dir !== 'h') { active = false; return; }
+    active = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const w = getW();
+    let idx = currentImgIdx;
+    if ((dx < -w*0.2 || vel < -0.3) && idx < total-1) idx++;
+    else if ((dx > w*0.2 || vel > 0.3) && idx > 0) idx--;
+    scrollMobileSwipeTo(idx, true);
+    updateDots(); updateCounter();
+  }, { passive: true });
 
-  // Scroll to current image
-  const itemW = container.offsetWidth;
-  container.scrollLeft = currentImgIdx * itemW;
-
-  // Listen to scroll to update counter and dots
-  let scrollTimer = null;
-  container.addEventListener('scroll', function() {
-    if (scrollTimer) clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function() {
-      const idx = Math.round(container.scrollLeft / container.offsetWidth);
-      if (idx !== currentImgIdx) {
-        currentImgIdx = idx;
-        lazyLoadNearby(idx);
-        updateDots();
-        updateCounter();
-      }
-    }, 50);
+  strip.addEventListener('touchcancel', () => {
+    active = false;
+    scrollMobileSwipeTo(currentImgIdx, true);
   }, { passive: true });
 }
-
 
 // ── KEYBOARD (desktop) ──
 document.addEventListener('keydown', function(e) {
