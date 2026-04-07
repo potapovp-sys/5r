@@ -146,7 +146,6 @@ let lbSwipeDragging = false;
 let lbSwipeVelocity = 0;
 let lbSwipeLastX = 0;
 let lbSwipeLastTime = 0;
-let lbSwipeAnimating = false;
 let lbImgsLoaded = {};
 
 function openLightbox(project, imgIdx) {
@@ -272,9 +271,11 @@ function scrollMobileSwipeTo(idx, animate) {
   const w = lbMain.offsetWidth || window.innerWidth;
   currentImgIdx = idx;
   if (animate) {
-    strip.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)';
+    strip.style.transition = 'transform 0.28s ease-out';
     strip.style.transform = 'translateX(' + (-idx * w) + 'px)';
-    setTimeout(() => { strip.style.transition = ''; }, 340);
+    // Clear transition after animation - no blocking flag
+    const t = strip;
+    setTimeout(() => { if (t.parentElement) t.style.transition = ''; }, 300);
   } else {
     strip.style.transition = '';
     strip.style.transform = 'translateX(' + (-idx * w) + 'px)';
