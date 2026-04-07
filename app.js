@@ -136,7 +136,7 @@ function showSection(name) {
 
 
 // ── MOBILE SWIPE LIGHTBOX ──────────────────────────────────────────
-const isMobile = () => window.innerWidth <= 768;
+const isMobile = () => window.innerWidth <= 900 || ('ontouchstart' in window && window.innerWidth <= 1024);
 
 // State
 let lbSwipeStrip = null;
